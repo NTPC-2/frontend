@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { AiOutlineHeart, AiFillHeart, AiOutlineStar, AiFillStar, AiOutlineMessage } from 'react-icons/ai';
+import { useState } from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import {
+  AiOutlineHeart,
+  AiFillHeart,
+  AiOutlineStar,
+  AiFillStar,
+  AiOutlineMessage,
+} from "react-icons/ai";
 //npm install react-icons 필요
 
 const Card = styled.div`
@@ -93,7 +99,11 @@ const CardComponent = () => {
   return (
     <Card>
       <CardImage>
-        <img src="image-placeholder.png" alt="Thumbnail" style={{ width: '100%', height: '100%' }} />
+        <img
+          src="image-placeholder.png"
+          alt="Thumbnail"
+          style={{ width: "100%", height: "100%" }}
+        />
       </CardImage>
       <CardContent>
         <StoreTitle to="/store-link">가게이름</StoreTitle>
@@ -101,20 +111,28 @@ const CardComponent = () => {
         <StoreMenu>메뉴</StoreMenu>
         <CardStats>
           <StoreStat onClick={handleLike}>
-            {liked ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart style={{ color: 'grey' }} />}
+            {liked ? (
+              <AiFillHeart style={{ color: "red" }} />
+            ) : (
+              <AiOutlineHeart style={{ color: "grey" }} />
+            )}
             {likes}
           </StoreStat>
           <StoreStat onClick={handleFavorite}>
-            {favorited ? <AiFillStar style={{ color: 'gold' }} /> : <AiOutlineStar style={{ color: 'grey' }} />}
+            {favorited ? (
+              <AiFillStar style={{ color: "gold" }} />
+            ) : (
+              <AiOutlineStar style={{ color: "grey" }} />
+            )}
             {favorites}
           </StoreStat>
           <StoreStat as={Link} to="/comments">
-            <AiOutlineMessage style={{ color: 'grey' }} />
+            <AiOutlineMessage style={{ color: "grey" }} />
           </StoreStat>
         </CardStats>
       </CardContent>
     </Card>
   );
-}
+};
 
 export default CardComponent;

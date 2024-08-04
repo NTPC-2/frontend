@@ -7,6 +7,7 @@ const Container = styled.div`
 
   width: 30%;
   margin: 0 auto;
+
 `;
 
 const StyleTitle = styled.div`
