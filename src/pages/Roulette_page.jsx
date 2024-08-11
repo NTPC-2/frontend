@@ -1,6 +1,6 @@
-import { Wheel } from 'react-custom-roulette';
-import { useState } from 'react';
-import styled from 'styled-components';
+import { Wheel } from "react-custom-roulette";
+import { useState } from "react";
+import styled from "styled-components";
 
 const Container = styled.div`
   display: flex;
@@ -87,7 +87,7 @@ function App() {
 
   const handleSpinClick = () => {
     if (!mustSpin && data.length > 0) {
-      const pivot = Math.floor((Math.random() * 99) + 1);
+      const pivot = Math.floor(Math.random() * 99 + 1);
       let stack = 0;
       let newPrizeNumber = null;
 
@@ -107,7 +107,7 @@ function App() {
   const StopSpinning = () => {
     setMustSpin(false);
     if (data.length > 0) {
-      alert(data[prizeNumber].option + '이 당첨되셨습니다');
+      alert(data[prizeNumber].option + "이 당첨되셨습니다");
     }
   };
 
@@ -119,12 +119,12 @@ function App() {
     if (inputValue.trim() !== "") {
       const newItem = {
         option: inputValue.trim(),
-        style: { backgroundColor: getRandomColor(), textColor: 'white' },
-        percentage: 100 / (data.length + 1)
+        style: { backgroundColor: getRandomColor(), textColor: "white" },
+        percentage: 100 / (data.length + 1),
       };
-      const newData = [...data, newItem].map(item => ({
+      const newData = [...data, newItem].map((item) => ({
         ...item,
-        percentage: 100 / (data.length + 1)
+        percentage: 100 / (data.length + 1),
       }));
       setData(newData);
       setInputValue("");
@@ -132,16 +132,18 @@ function App() {
   };
 
   const removeItem = (index) => {
-    const newData = data.filter((_, i) => i !== index).map(item => ({
-      ...item,
-      percentage: 100 / (data.length - 1)
-    }));
+    const newData = data
+      .filter((_, i) => i !== index)
+      .map((item) => ({
+        ...item,
+        percentage: 100 / (data.length - 1),
+      }));
     setData(newData);
   };
 
   const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
+    const letters = "0123456789ABCDEF";
+    let color = "#";
     for (let i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
@@ -154,10 +156,20 @@ function App() {
         <Wheel
           mustStartSpinning={mustSpin}
           prizeNumber={prizeNumber}
-          data={data.length > 0 ? data : [{ option: '', style: { backgroundColor: '#fff' }, percentage: 100 }]}
+          data={
+            data.length > 0
+              ? data
+              : [
+                  {
+                    option: "",
+                    style: { backgroundColor: "#fff" },
+                    percentage: 100,
+                  },
+                ]
+          }
           onStopSpinning={StopSpinning}
-          backgroundColors={['#3e3e3e', '#df3428']}
-          textColors={['#ffffff']}
+          backgroundColors={["#3e3e3e", "#df3428"]}
+          textColors={["#ffffff"]}
           outerBorderColor={"#ccc"}
           outerBorderWidth={10}
           innerBorderColor={"#f2f2f2"}
@@ -183,7 +195,9 @@ function App() {
           {data.map((item, index) => (
             <ListItem key={index}>
               {item.option}
-              <RemoveButton onClick={() => removeItem(index)}>삭제</RemoveButton>
+              <RemoveButton onClick={() => removeItem(index)}>
+                삭제
+              </RemoveButton>
             </ListItem>
           ))}
         </List>
