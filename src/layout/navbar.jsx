@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-
+import myPageIcon from "../assets/Avatar.png";
+import login from "../assets/Login.png";
 const Container = styled.div`
   width: 100%;
-  height: 8%;
+  height: 6%;
   background-color: #fff;
   display: flex;
   flex-direction: row;
@@ -31,16 +32,6 @@ const HomeLogo = styled(Link)`
   }
 `;
 
-const LoginLogout = styled(Link)`
-  padding: 15px;
-  color: #000000;
-  cursor: pointer;
-
-  &:hover {
-    transform: scale(1.2);
-  }
-`;
-
 const StyleLink = styled(Link)`
   text-decoration: none;
   padding: 15px;
@@ -63,7 +54,32 @@ const SearchBarContainer = styled.div`
 const SearchInput = styled.input`
   width: 90%;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+`;
+
+const MyPageLink = styled(Link)`
+  padding: 15px;
+  display: flex;
+  align-items: center;
+`;
+
+const MyPageIcon = styled.img`
+  width: 24px;
+  height: 24px;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+`;
+
+const LoginIcon = styled.img`
+  width: 60px;
+  height: 24px;
+
+  &:hover {
+    transform: scale(1.2);
+  }
 `;
 
 const Navbar = () => {
@@ -73,14 +89,19 @@ const Navbar = () => {
         <HomeLogo to="/">인슐랭</HomeLogo>
       </ContentContainer>
       <ContentContainer>
-        <styledLink to="/1">게시판</styledLink>
+        <StyleLink to="/Community">게시판</StyleLink>
       </ContentContainer>
       <SearchBarContainer>
         <SearchInput placeholder="Seearch ..."></SearchInput>
       </SearchBarContainer>
       <ContentContainer>
-        <LoginLogout to="/signup">회원가입</LoginLogout>
-        <StyleLink to="/mypage">마이페이지</StyleLink>
+        <MyPageLink to="/Login">
+          <LoginIcon src={login} alt="Login" />
+        </MyPageLink>
+
+        <MyPageLink to="/mypage">
+          <MyPageIcon src={myPageIcon} alt="My Page" />
+        </MyPageLink>
       </ContentContainer>
     </Container>
   );
