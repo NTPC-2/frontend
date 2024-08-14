@@ -7,6 +7,7 @@ import Roulettepage from "./pages/Roulette_page";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import Communitypage from "./pages/Communitypage";
 import Categories from "./pages/Categories_page";
+import FoodDetailPage from "./pages/Food_details_page";
 import Mypage from "./pages/Mypage";
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/Roulette" element={<Roulettepage />} />
           <Route path="/Community" element={<Communitypage />} />
           <Route path="/categories/:category" element={<Categories />} />
+          <Route path="/store/:storeId" element={<FoodDetailPage />} />
           <Route path="/mypage" element={<Mypage />} />
         </Route>
       </Routes>

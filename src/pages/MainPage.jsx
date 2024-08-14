@@ -43,14 +43,37 @@ const MenuItem = styled(Link)`
   }
 `;
 
-const RouletteContainer = styled.div`
+const RouletteLink = styled(Link)`
   margin-top: 15px;
   height: 500px;
-  width: 100%;
+  width: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: gray;
+  border-radius: 50%; /* 원형으로 만들기 */
+  text-decoration: none;
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250px;
+    height: 250px;
+    background-color: #ffcc00;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:after {
+    content: '🎯 룰렛 돌리기';
+    position: absolute;
+    color: #000;
+    font-size: 24px;
+    font-weight: bold;
+  }
 `;
 
 const StyledTextContainer = styled.div`
@@ -133,7 +156,7 @@ const Mainpage = () => {
             <MenuItem to="/categories/bar">술집</MenuItem>
           </ContentContainer>
         </MenuBarContainer>
-        <RouletteContainer></RouletteContainer>
+        <RouletteLink to="/roulette" />
         <StyledTextContainer>
           <StyledText>지금 뜨는 음식점</StyledText>
         </StyledTextContainer>
