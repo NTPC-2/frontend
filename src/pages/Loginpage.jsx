@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -87,8 +88,7 @@ const LoginPage = () => {
   const handleForgotPasswordClick = () => {
     navigate("/Login/forgot-password");
   };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -98,33 +98,35 @@ const LoginPage = () => {
       return;
     }
 
-    if (inputValue.password.length > 12) {
-      alert("Password must be less than or equal to 12 characters.");
+    if (inputValue.password.length < 4 || inputValue.password.length > 12) {
+      alert("Password must be between 4 and 12 characters.");
       return;
     }
 
-    // Assume login is successful
-    navigate("/");
-  };
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    try {
+      const response = await axios.post("serverUrl", {
+        email: inputValue.email,
+        password: inputValue.password,
+      });
 
-      if (!emailRegex.test(inputValue.email)) {
-        alert("Invalid email format.");
-        return;
+      if (response.status === 200) {
+        alert("Login successful");
+        navigate("/");
       }
-
-      if (inputValue.password.length > 12) {
-        alert("Password must be less than or equal to 12 characters.");
-        return;
+    } catch (error) {
+      if (error.response) {
+        alert(error.response.data.error);
+      } else {
+        alert("Login failed. Please try again.");
       }
-
-      // Assume login is successful
-      navigate("/");
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSubmit(event);
+    }
+  };
   return (
     <>
       <StyleTitle>로그인</StyleTitle>

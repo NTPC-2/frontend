@@ -1,7 +1,13 @@
 import styled from "styled-components";
 import mypage from "../assets/mypage.png";
-import CardComponent from "../component/CardComponent";
+import CardComponent from "../../component/CardComponent";
 import { createGlobalStyle } from "styled-components";
+import MyPostespage from "./MyPostespage";
+import Reviewpage from "./Reviewpage";
+import MycCommentspage from "./MyCommentspage";
+import Favoritepage from "./Favoritepage";
+import Likepage from "./Likepage";
+import { useState } from "react";
 
 const GlobalStyle = createGlobalStyle`
   body, html {
@@ -114,6 +120,25 @@ const FoodContainer = styled.div`
 `;
 const StyledText2 = styled.div``;
 const Mypage = () => {
+  const [selectedTab, setSelectedTab] = useState("즐겨찾기");
+
+  const renderContent = () => {
+    switch (selectedTab) {
+      case "즐겨찾기":
+        return <Favoritepage />; // 즐겨찾기 페이지
+      case "리뷰":
+        return <Reviewpage />; // 리뷰 페이지
+      case "좋아요":
+        return <Likepage />; // 좋아요 페이지 (빈 페이지)
+      case "작성한 글":
+        return <MyPostespage />; // 작성한 글 페이지
+      case "댓글":
+        return <MycCommentspage />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -132,33 +157,29 @@ const Mypage = () => {
         </ProfileContainer>
         <HorizontalLine2 />
         <ListContainer>
-          <ContentBox>
+          <ContentBox onClick={() => setSelectedTab("즐겨찾기")}>
             <StyledText>즐겨찾기</StyledText>
             <StyledText>(3)</StyledText>
           </ContentBox>
-          <ContentBox>
+          <ContentBox onClick={() => setSelectedTab("리뷰")}>
             <StyledText>리뷰</StyledText>
             <StyledText>(0)</StyledText>
           </ContentBox>
-          <ContentBox>
+          <ContentBox onClick={() => setSelectedTab("좋아요")}>
             <StyledText>좋아요</StyledText>
             <StyledText>(0)</StyledText>
           </ContentBox>
-          <ContentBox>
+          <ContentBox onClick={() => setSelectedTab("작성한 글")}>
             <StyledText>작성한 글</StyledText>
             <StyledText>(0)</StyledText>
           </ContentBox>
-          <ContentBox>
+          <ContentBox onClick={() => setSelectedTab("댓글")}>
             <StyledText>댓글</StyledText>
             <StyledText>(0)</StyledText>
           </ContentBox>
         </ListContainer>
         <HorizontalLine2 />
-        <FoodContainer>
-          <CardComponent />
-          <CardComponent />
-          <CardComponent />
-        </FoodContainer>
+        <FoodContainer>{renderContent()}</FoodContainer>
       </Layout>
     </>
   );
