@@ -8,7 +8,6 @@ import {
   AiFillStar,
   AiOutlineMessage,
 } from "react-icons/ai";
-//npm install react-icons 필요
 
 const Card = styled.div`
   display: flex;
@@ -78,6 +77,8 @@ const CardComponent = () => {
   const [liked, setLiked] = useState(false);
   const [favorited, setFavorited] = useState(false);
 
+  const storeId = "store1"; // 여기서 각 가게의 고유 ID를 설정합니다
+
   const handleLike = () => {
     if (liked) {
       setLikes(likes - 1);
@@ -106,7 +107,7 @@ const CardComponent = () => {
         />
       </CardImage>
       <CardContent>
-        <StoreTitle to="/store-link">가게이름</StoreTitle>
+        <StoreTitle to={`/store/${storeId}`}>가게이름</StoreTitle>
         <StoreLocation>가게위치</StoreLocation>
         <StoreMenu>메뉴</StoreMenu>
         <CardStats>

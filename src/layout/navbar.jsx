@@ -1,7 +1,11 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { LoggedState } from "../recoil/states/Login";
+import { Link, useNavigate } from "react-router-dom";
 import myPageIcon from "../assets/Avatar.png";
 import login from "../assets/Login.png";
+import logout from "../assets/logout.png";
+import signup from "../assets/signup.png";
 const Container = styled.div`
   width: 100%;
   height: 6%;
@@ -83,6 +87,13 @@ const LoginIcon = styled.img`
 `;
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoggedState);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setIsLoggedIn({ isLoggedIn: false, user: null });
+    navigate("/");
+  };
   return (
     <Container>
       <ContentContainer>
@@ -95,13 +106,25 @@ const Navbar = () => {
         <SearchInput placeholder="Seearch ..."></SearchInput>
       </SearchBarContainer>
       <ContentContainer>
-        <MyPageLink to="/Login">
-          <LoginIcon src={login} alt="Login" />
-        </MyPageLink>
-
-        <MyPageLink to="/mypage">
-          <MyPageIcon src={myPageIcon} alt="My Page" />
-        </MyPageLink>
+        {isLoggedIn ? (
+          <>
+            <MyPageLink to="/Signup">
+              <LoginIcon src={signup} alt="Signup" />
+            </MyPageLink>
+            <MyPageLink to="/Login">
+              <LoginIcon src={login} alt="Login" />
+            </MyPageLink>
+          </>
+        ) : (
+          <>
+            <MyPageLink to="/" onClick={handleLogout}>
+              <LoginIcon src={logout} alt="Logout" />
+            </MyPageLink>
+            <MyPageLink to={`/mypage/${isLoggedIn.user.id}`}>
+              <MyPageIcon src={myPageIcon} alt="My Page" />
+            </MyPageLink>
+          </>
+        )}
       </ContentContainer>
     </Container>
   );
