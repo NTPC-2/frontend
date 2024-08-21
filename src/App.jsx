@@ -20,16 +20,17 @@ function App() {
             <Route path="/" element={<Mainpage />} />
             <Route path="/Login" element={<LoginPage />} />
             <Route path="/Signup" element={<Signup />} />
-            <Route
-              path="/Login/forgot-password"
-              element={<ForgotPasswordPage />}
-            />
+
             <Route path="/Roulette" element={<Roulettepage />} />
             <Route path="/Community" element={<Communitypage />} />
             <Route path="/categories/:category" element={<Categories />} />
             <Route path="/store/:storeId" element={<FoodDetailPage />} />
             <Route path="/mypage" element={<Mypage />} />
           </Route>
+          <Route
+            path="/Login/forgot-password"
+            element={<ForgotPasswordPage />}
+          />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>

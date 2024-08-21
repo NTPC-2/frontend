@@ -1,3 +1,6 @@
+import CardComponent from "../../component/CardComponent";
+import styled from "styled-components";
+
 const FoodContainer = styled.div`
   height: 500px;
   width: 700px;
@@ -8,6 +11,15 @@ const FoodContainer = styled.div`
   justify-items: center;
   align-items: center;
   padding: 20px;
-  background-color: yellow;
 `;
-const StyledText2 = styled.div``;
+
+// eslint-disable-next-line react/prop-types
+const Bookmarkpage = ({ count }) => {
+  const cards = Array.from({ length: count }, (_, index) => (
+    <CardComponent key={index} />
+  ));
+
+  return <FoodContainer>{cards}</FoodContainer>;
+};
+
+export default Bookmarkpage;
