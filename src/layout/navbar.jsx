@@ -6,6 +6,7 @@ import myPageIcon from "../assets/Avatar.png";
 import login from "../assets/Login.png";
 import logout from "../assets/logout.png";
 import signup from "../assets/signup.png";
+
 const Container = styled.div`
   width: 100%;
   height: 6%;
@@ -13,9 +14,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
   position: fixed;
   z-index: 1;
+  top: 0;
 `;
 
 const ContentContainer = styled.div`
@@ -91,9 +92,11 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setIsLoggedIn({ isLoggedIn: false, user: null });
+    // 로그아웃 시 새로운 객체를 생성하여 상태를 업데이트
+    setIsLoggedIn((prev) => ({ ...prev, isLoggedIn: false, user: null }));
     navigate("/");
   };
+
   return (
     <Container>
       <ContentContainer>
@@ -103,25 +106,25 @@ const Navbar = () => {
         <StyleLink to="/Community">게시판</StyleLink>
       </ContentContainer>
       <SearchBarContainer>
-        <SearchInput placeholder="Seearch ..."></SearchInput>
+        <SearchInput placeholder="Search ..."></SearchInput>
       </SearchBarContainer>
       <ContentContainer>
-        {isLoggedIn ? (
+        {isLoggedIn.isLoggedIn ? ( // 로그인 여부에 따라 조건 변경
+          <>
+            <MyPageLink to="/" onClick={handleLogout}>
+              <LoginIcon src={logout} alt="Logout" />
+            </MyPageLink>
+            <MyPageLink to={`/mypage`}>
+              <MyPageIcon src={myPageIcon} alt="My Page" />
+            </MyPageLink>
+          </>
+        ) : (
           <>
             <MyPageLink to="/Signup">
               <LoginIcon src={signup} alt="Signup" />
             </MyPageLink>
             <MyPageLink to="/Login">
               <LoginIcon src={login} alt="Login" />
-            </MyPageLink>
-          </>
-        ) : (
-          <>
-            <MyPageLink to="/" onClick={handleLogout}>
-              <LoginIcon src={logout} alt="Logout" />
-            </MyPageLink>
-            <MyPageLink to={`/mypage/${isLoggedIn.user.id}`}>
-              <MyPageIcon src={myPageIcon} alt="My Page" />
             </MyPageLink>
           </>
         )}

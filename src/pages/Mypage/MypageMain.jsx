@@ -3,7 +3,7 @@ import mypage from "../../assets/mypage.png";
 
 import { createGlobalStyle } from "styled-components";
 import { useRecoilValue } from "recoil";
-
+import { useNavigate } from "react-router-dom";
 import { userState } from "../../recoil/states/Mypage";
 import { useState } from "react";
 import MyPostspage from "./MyPostespage";
@@ -132,7 +132,7 @@ const StyledText2 = styled.div``;
 const Mypage = () => {
   const userData = useRecoilValue(userState);
   const [selectedTab, setSelectedTab] = useState("즐겨찾기");
-
+  const navigate = useNavigate();
   const renderContent = () => {
     switch (selectedTab) {
       case "즐겨찾기":
@@ -162,7 +162,7 @@ const Mypage = () => {
             <StyledText2>안녕하세요 {userData.userNickname}님</StyledText2>
           </NameBox>
           <MyBox>
-            <Icon src={mypage}></Icon>
+            <Icon src={mypage} onClick={() => navigate("/mypage/edit")}></Icon>
             <StyledText2>프로필 수정</StyledText2>
           </MyBox>
         </ProfileContainer>

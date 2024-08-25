@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoggedState } from "../../recoil/states/Login";
 import { useRecoilState } from "recoil";
+import { setCookie } from "../../utils/UseCookies";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -60,7 +61,30 @@ const LoginPage = () => {
       });
 
       if (response.status === 200) {
-        setIsLoggedIn({ isLoggedIn: true, user: response.data.user });
+        const { token, user } = response.data;
+
+        // Save token in cookie
+        setCookie("authToken", token, {
+          path: "/",
+          secure: true,
+          sameSite: "strict",
+        });
+
+        setIsLoggedIn({ isLoggedIn: true, user });
+        alert("Login successful");
+        navigate("/");
+      }
+      if (response.status === 200) {
+        const { token, user } = response.data;
+
+        // Save token in cookie
+        setCookie("authToken", token, {
+          path: "/",
+          secure: true,
+          sameSite: "strict",
+        });
+
+        setIsLoggedIn({ isLoggedIn: true, user });
         alert("Login successful");
         navigate("/");
       }
