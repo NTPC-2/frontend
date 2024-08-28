@@ -4,7 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoggedState } from "../../recoil/states/Login";
 import { useRecoilState } from "recoil";
-import { setCookie } from "../../utils/UseCookies";
+
+// Axios 인스턴스 생성
+const axiosInstance = axios.create({
+  baseURL: "http://localhost:8080",
+  withCredentials: true, // 쿠키 전송을 위해 설정
+});
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -55,45 +60,82 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post(`http://localhost:8080/login`, {
-        email: inputValue.email,
-        password: inputValue.password,
-      });
+      const refreshToken = localStorage.getItem("refreshToken");
 
-      if (response.status === 200) {
-        const { token, user } = response.data;
-
-        // Save token in cookie
-        setCookie("authToken", token, {
-          path: "/",
-          secure: true,
-          sameSite: "strict",
+      if (refreshToken) {
+        // 리프레시 토큰이 존재하면 토큰 재발급 API 호출
+        const response = await axiosInstance.post("/api/token/reissue", null, {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
         });
 
-        setIsLoggedIn({ isLoggedIn: true, user });
-        alert("Login successful");
-        navigate("/");
-      }
-      if (response.status === 200) {
-        const { token, user } = response.data;
+        const { accessToken, refreshToken: newRefreshToken } = response.data;
 
-        // Save token in cookie
-        setCookie("authToken", token, {
-          path: "/",
-          secure: true,
-          sameSite: "strict",
+        if (accessToken && newRefreshToken) {
+          // 새로운 액세스 토큰과 리프레시 토큰을 localStorage에 저장
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", newRefreshToken);
+
+          // Axios 인스턴스에 새로운 accessToken 설정
+          axiosInstance.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${accessToken}`;
+
+          // 로그인 상태를 true로 업데이트
+          setIsLoggedIn({ isLoggedIn: true });
+
+          // 저장한 토큰을 콘솔에 출력
+          console.log("Access Token:", accessToken);
+          console.log("Refresh Token:", newRefreshToken);
+
+          navigate("/"); // 홈 페이지로 리디렉션
+        } else {
+          // 서버에서 리프레시 토큰이 유효하지 않다고 판단한 경우
+          alert("토큰 재발급에 실패했습니다. 다시 로그인해 주세요.");
+          localStorage.removeItem("refreshToken");
+          setIsLoggedIn({ isLoggedIn: false });
+          navigate("/Login");
+        }
+      } else {
+        // 리프레시 토큰이 없으면 일반 로그인 API 호출
+        const response = await axiosInstance.post(`/login`, {
+          email: inputValue.email,
+          password: inputValue.password,
         });
 
-        setIsLoggedIn({ isLoggedIn: true, user });
-        alert("Login successful");
-        navigate("/");
+        if (response.status === 200) {
+          const accessToken =
+            response.headers["authorization"]?.split(" ")[1] ||
+            response.headers["accessToken"];
+
+          if (accessToken) {
+            localStorage.setItem("accessToken", accessToken);
+
+            const newRefreshToken = response.data.refreshToken;
+            if (newRefreshToken) {
+              localStorage.setItem("refreshToken", newRefreshToken);
+            }
+
+            axiosInstance.defaults.headers.common[
+              "Authorization"
+            ] = `Bearer ${accessToken}`;
+
+            setIsLoggedIn({ isLoggedIn: true });
+
+            // 저장한 토큰을 콘솔에 출력
+            console.log("Access Token:", accessToken);
+            console.log("Refresh Token:", newRefreshToken);
+
+            navigate("/");
+          } else {
+            alert("로그인에 실패했습니다. 다시 시도해 주세요.");
+          }
+        }
       }
     } catch (error) {
-      if (error.response) {
-        alert(error.response.data.error);
-      } else {
-        alert("Login failed. Please try again.");
-      }
+      console.error("로그인 중 오류 발생:", error);
+      alert("로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 

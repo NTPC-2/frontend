@@ -6,11 +6,12 @@ import LoginPage from "./pages/Login/Loginpage";
 import Signup from "./pages/signup/Signup";
 import Roulettepage from "./pages/Roulette_page";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import Communitypage from "./pages/Communitypage";
+
 import Categories from "./pages/Categories_page";
 import FoodDetailPage from "./pages/Food_details_page";
 import Mypage from "./pages/Mypage/MypageMain";
 import EditProfile from "./pages/Mypage/EditProfile";
+import CommunityMain from "./pages/community/CommunityMain";
 function App() {
   return (
     <RecoilRoot>
@@ -22,7 +23,7 @@ function App() {
             <Route path="/Signup" element={<Signup />} />
 
             <Route path="/Roulette" element={<Roulettepage />} />
-            <Route path="/Community" element={<Communitypage />} />
+            <Route path="/Community" element={<CommunityMain />} />
             <Route path="/categories/:category" element={<Categories />} />
             <Route path="/store/:storeId" element={<FoodDetailPage />} />
             <Route path="/mypage" element={<Mypage />} />

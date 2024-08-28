@@ -1,12 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import {
   AiOutlineHeart,
   AiFillHeart,
   AiOutlineStar,
   AiFillStar,
-  AiOutlineMessage,
 } from "react-icons/ai";
 
 // 카드 스타일
@@ -74,24 +72,6 @@ const ReviewDate = styled.p`
   margin: 0;
 `;
 
-// 카드 통계 스타일
-const CardStats = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-  width: 100%;
-`;
-
-// 리뷰 통계 스타일
-const ReviewStat = styled.span`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #555555;
-  margin-right: 10px;
-  cursor: pointer;
-`;
-
 // 별 개수를 나타내는 컴포넌트
 const Stars = ({ count }) => {
   const stars = Array(5)
@@ -99,8 +79,6 @@ const Stars = ({ count }) => {
     .map((_, index) => index < count);
   return (
     <div style={{ display: "flex", gap: "4px" }}>
-      {" "}
-      {/* Flexbox를 사용하여 별을 가로로 배치 */}
       {stars.map((filled, index) =>
         filled ? (
           <AiFillStar key={index} style={{ color: "gold" }} />
@@ -113,36 +91,37 @@ const Stars = ({ count }) => {
 };
 
 // 리뷰 카드 컴포넌트
-const ReviewCard = ({ review }) => {
+const ReviewCard = ({
+  restaurantName,
+  star,
+  contents,
+  userNickname,
+  timeLine,
+  imgList,
+}) => {
   const [likes, setLikes] = useState(0);
   const [favorites, setFavorites] = useState(0);
   const [liked, setLiked] = useState(false);
   const [favorited, setFavorited] = useState(false);
 
   const handleLike = () => {
-    if (liked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
-    }
-    setLiked(!liked);
+    setLikes((prevLikes) => (liked ? prevLikes - 1 : prevLikes + 1));
+    setLiked((prevLiked) => !prevLiked);
   };
 
   const handleFavorite = () => {
-    if (favorited) {
-      setFavorites(favorites - 1);
-    } else {
-      setFavorites(favorites + 1);
-    }
-    setFavorited(!favorited);
+    setFavorites((prevFavorites) =>
+      favorited ? prevFavorites - 1 : prevFavorites + 1
+    );
+    setFavorited((prevFavorited) => !prevFavorited);
   };
 
   return (
     <Card>
       <CardImage>
-        {review.imgList.length > 0 ? (
+        {imgList.length > 0 ? (
           <CardImageContent
-            src={review.imgList[0]} // 첫 번째 이미지를 표시합니다
+            src={imgList[0]} // 첫 번째 이미지를 표시합니다
             alt="Review Thumbnail"
           />
         ) : (
@@ -150,11 +129,11 @@ const ReviewCard = ({ review }) => {
         )}
       </CardImage>
       <CardContent>
-        <ReviewTitle>{review.restaurantName}</ReviewTitle>
-        <Stars count={review.star} /> {/* 별 개수를 표시 */}
-        <ReviewBody>{review.contents}</ReviewBody>
-        <ReviewAuthor>{review.userNickname}</ReviewAuthor>
-        <ReviewDate>{review.timeLine}</ReviewDate>
+        <ReviewTitle>{restaurantName}</ReviewTitle>
+        <Stars count={star} /> {/* 별 개수를 표시 */}
+        <ReviewBody>{contents}</ReviewBody>
+        <ReviewAuthor>{userNickname}</ReviewAuthor>
+        <ReviewDate>{timeLine}</ReviewDate>
       </CardContent>
     </Card>
   );

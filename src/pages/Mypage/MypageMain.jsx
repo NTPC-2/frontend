@@ -1,11 +1,10 @@
-import styled from "styled-components";
-import mypage from "../../assets/mypage.png";
-
-import { createGlobalStyle } from "styled-components";
-import { useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
+import styled, { createGlobalStyle } from "styled-components";
+import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { userState } from "../../recoil/states/Mypage";
-import { useState } from "react";
+import axios from "axios";
+import mypage from "../../assets/mypage.png";
 import MyPostspage from "./MyPostespage";
 import Reviewpage from "./Reviewpage";
 import MycCommentspage from "./MyCommentspage";
@@ -51,12 +50,12 @@ const ProfileContainer = styled.div`
   justify-content: flex-start;
 `;
 
-const ProfileImage = styled.div`
+const ProfileImage = styled.img`
   width: 100px;
   height: 100px;
-  background-color: #ccc;
   border-radius: 50%;
   margin-left: 20px;
+  object-fit: cover;
 `;
 
 const NameBox = styled.div`
@@ -115,6 +114,8 @@ const StyledText = styled.div`
   font-weight: 700;
 `;
 
+const StyledText2 = styled.div``;
+
 const FoodContainer = styled.div`
   height: 500px;
   width: 700px;
@@ -127,12 +128,48 @@ const FoodContainer = styled.div`
   padding: 20px;
 `;
 
-const StyledText2 = styled.div``;
-
 const Mypage = () => {
-  const userData = useRecoilValue(userState);
+  const [userData, setUserData] = useRecoilState(userState);
   const [selectedTab, setSelectedTab] = useState("즐겨찾기");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        console.log("Access Token:", accessToken); // localStorage에서 가져온 액세스 토큰 확인
+
+        if (!accessToken) {
+          alert("로그인이 필요합니다.");
+          navigate("/login");
+          return;
+        }
+
+        // 프로필 정보 요청
+        const response = await axios.get("http://localhost:8080/profiles", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (response.data.success) {
+          const userData = response.data.data;
+          setUserData(userData);
+        } else {
+          console.log("Failed to fetch profile:", response.data.message);
+          alert("프로필 정보를 가져오지 못했습니다. 다시 시도해주세요.");
+          navigate("/login");
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+        navigate("/login");
+      }
+    };
+
+    fetchUserProfile();
+  }, [navigate, setUserData]);
+
   const renderContent = () => {
     switch (selectedTab) {
       case "즐겨찾기":
@@ -156,13 +193,13 @@ const Mypage = () => {
       <Layout>
         <HorizontalLine />
         <ProfileContainer>
-          <ProfileImage></ProfileImage>
+          <ProfileImage src={userData.profileImg} alt="Profile" />
           <NameBox>
             <Name>{userData.userNickname}</Name>
             <StyledText2>안녕하세요 {userData.userNickname}님</StyledText2>
           </NameBox>
           <MyBox>
-            <Icon src={mypage} onClick={() => navigate("/mypage/edit")}></Icon>
+            <Icon src={mypage} onClick={() => navigate("/mypage/edit")} />
             <StyledText2>프로필 수정</StyledText2>
           </MyBox>
         </ProfileContainer>

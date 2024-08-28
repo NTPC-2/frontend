@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import AccountDeleteModal from "./AccountDeleteModal";
+import { useRecoilState } from "recoil";
+import { LoggedState } from "../../recoil/states/Login";
 
 const GlobalStyle = createGlobalStyle`
   body, html {
@@ -117,14 +120,19 @@ const Button = styled.button`
 
 const ProfileEditPage = () => {
   const navigate = useNavigate();
-  const [profileImage, setProfileImage] = useState(null);
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("");
-  const [age, setAge] = useState("");
+  const [loggedState, setLoggedState] = useRecoilState(LoggedState);
+  const [profileImage, setProfileImage] = useState(
+    loggedState.profileImg || ""
+  );
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [nickname, setNickname] = useState(loggedState.nickname || "");
+  const [email, setEmail] = useState(loggedState.email || "");
+  const [phoneNumber, setPhoneNumber] = useState(loggedState.phone || "");
+  const [gender, setGender] = useState(loggedState.gender || "");
+  const [age, setAge] = useState(loggedState.age || "");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const token = localStorage.getItem("authToken"); // Get token from localStorage
+  const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -133,9 +141,9 @@ const ProfileEditPage = () => {
           "http://localhost:8080/profiles/update",
           {
             headers: {
-              Authorization: `Bearer ${token}`, // Include token in headers
+              Authorization: `Bearer ${token}`,
             },
-            withCredentials: true, // 쿠키 포함
+            withCredentials: true,
           }
         );
 
@@ -153,30 +161,68 @@ const ProfileEditPage = () => {
     };
 
     fetchProfileData();
-  }, [token]); // Added token dependency
+  }, [token]);
+
+  const handleCancel = () => {
+    navigate(-1);
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setProfileImage(URL.createObjectURL(file));
+      setProfileImageFile(file);
     }
   };
 
   const handleSave = async () => {
     try {
       const formData = new FormData();
-      formData.append("profileImg", profileImage);
-      formData.append("nickname", nickname);
+      formData.append("nickname", nickname); // Ensure this is the correct variable name
       formData.append("phoneNumber", phoneNumber);
       formData.append("gender", gender);
       formData.append("age", age);
 
+      if (profileImageFile) {
+        formData.append("profileImg", profileImageFile);
+      } else if (profileImage) {
+        const response = await fetch(profileImage);
+        const blob = await response.blob();
+        const file = new File([blob], "profileImage.jpg", { type: blob.type });
+        formData.append("profileImg", file);
+      }
+
       await axios.put("http://localhost:8080/profiles/update", formData, {
         headers: {
-          Authorization: `Bearer ${token}`, // Include token in headers
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
-        withCredentials: true, // 쿠키 포함
+        withCredentials: true,
       });
+
+      // PUT 요청 성공 후 GET 요청을 통해 최신 정보 불러오기
+      const updatedProfileResponse = await axios.get(
+        "http://localhost:8080/profiles/update",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      const { email, nickname, phoneNumber, gender, age, profileImg } =
+        updatedProfileResponse.data.data;
+
+      setLoggedState((prevState) => ({
+        ...prevState,
+        email,
+        nickname, // Make sure to use correct variable name
+        phoneNumber,
+        gender,
+        age,
+        profileImg,
+      }));
 
       window.alert("정보가 올바르게 수정되었습니다!");
       navigate("/mypage");
@@ -186,30 +232,33 @@ const ProfileEditPage = () => {
     }
   };
 
-  const handleCancel = () => {
-    window.alert("변경사항이 저장되지 않았습니다.");
+  const handleDeleteAccount = () => {
+    setIsModalOpen(true);
   };
 
-  const handleDeleteAccount = async () => {
-    const confirmDelete = window.confirm("정말로 회원 탈퇴를 하시겠습니까?");
-    if (confirmDelete) {
-      try {
-        await axios.patch(
-          "http://localhost:8080/profiles/delete",
-          { status: "INACTIVE" }, // 요청 본문에 상태 변경 정보 포함
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Include token in headers
-            },
-            withCredentials: true, // 쿠키 포함
-          }
-        );
-        window.alert("회원 탈퇴가 성공적으로 완료되었습니다.");
-        navigate("/");
-      } catch (error) {
-        console.error("Error deleting account:", error);
-        window.alert("회원 탈퇴에 실패했습니다.");
-      }
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const confirmDeleteAccount = async () => {
+    try {
+      await axios.patch(
+        "http://localhost:8080/profiles/delete",
+        { status: "INACTIVE" },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      window.alert("회원 탈퇴가 성공적으로 완료되었습니다.");
+      navigate("/");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      window.alert("회원 탈퇴에 실패했습니다.");
+    } finally {
+      closeModal();
     }
   };
 
@@ -288,6 +337,14 @@ const ProfileEditPage = () => {
       <Button className="delete" onClick={handleDeleteAccount}>
         회원탈퇴
       </Button>
+
+      {isModalOpen && (
+        <AccountDeleteModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onConfirm={confirmDeleteAccount}
+        />
+      )}
     </Container>
   );
 };

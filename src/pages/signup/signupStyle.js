@@ -29,7 +29,7 @@ export const FormContainer = styled.div`
 `;
 
 export const StyleInput = styled.input`
-  width: 200px;
+  width: 240px;
   height: 20px;
   margin-top: 10px;
   padding: 10px 0px 10px 10px;
@@ -53,14 +53,15 @@ export const GenderLabel = styled.label`
 
 export const SubmitButton = styled.button`
   margin-top: 40px;
-  width: 404px;
+  width: 450px;
   height: 35.4px;
   background-color: ${(props) => (props.disabled ? "#ccc" : "#5b86e5")};
   border-radius: 10px;
   border: 1px solid #5b86e5;
   text-align: center;
+
   font-size: 20px;
-  margin-left: 5px;
+  margin-left: 70px;
   color: white;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
 `;
