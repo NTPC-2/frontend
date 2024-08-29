@@ -1,6 +1,7 @@
 import { Wheel } from "react-custom-roulette";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios"; // axios를 import
 
 const Container = styled.div`
   display: flex;
@@ -70,74 +71,99 @@ const ListItem = styled.li`
   margin-bottom: 5px;
 `;
 
-const RemoveButton = styled.button`
-  background-color: red;
+const ActionButton = styled.button`
+  background-color: ${(props) => (props.add ? "#5b86e5" : "red")};
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   padding: 5px 10px;
+  font-size: 14px;
+  width: 70px; /* 추가와 삭제 버튼의 크기를 동일하게 맞춤 */
 `;
 
-function App() {
-  const [data, setData] = useState([]); // 초기 데이터 없음
+function Roulette() {
+  const [data, setData] = useState([]);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
-  const [inputValue, setInputValue] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    fetchFavoriteRestaurants();
+  }, []);
+
+  const fetchFavoriteRestaurants = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/roulette');
+      const restaurantData = response.data.map((restaurant) => ({
+        option: restaurant.restaurantName,
+        restaurantId: restaurant.restaurantId,
+        style: { backgroundColor: getRandomColor(), textColor: "white" },
+      }));
+
+      setData(restaurantData);
+    } catch (error) {
+      console.error("Error fetching favorite restaurants:", error);
+      alert("즐겨찾기 음식점을 가져오는 중 오류가 발생했습니다.");
+    }
+  };
 
   const handleSpinClick = () => {
-    if (!mustSpin && data.length > 0) {
-      const pivot = Math.floor(Math.random() * 99 + 1);
-      let stack = 0;
-      let newPrizeNumber = null;
-
-      data.some((row, idx) => {
-        stack += row.percentage;
-        if (pivot <= stack) {
-          newPrizeNumber = idx;
-          return true;
-        }
-      });
-
-      setPrizeNumber(newPrizeNumber);
-      setMustSpin(true);
+    if (data.length === 0) {
+      alert("데이터가 없습니다. 먼저 항목을 추가하세요.");
+      return;
     }
+
+    const newPrizeNumber = Math.floor(Math.random() * data.length);
+    setPrizeNumber(newPrizeNumber);
+    setMustSpin(true);
   };
 
   const StopSpinning = () => {
     setMustSpin(false);
     if (data.length > 0) {
-      alert(data[prizeNumber].option + "이 당첨되셨습니다");
+      const selectedRestaurant = data[prizeNumber];
+      alert(`${selectedRestaurant.option}이 당첨되셨습니다!`);
+
+      const navigateToDetail = window.confirm(
+        `${selectedRestaurant.option}의 자세히 보기 페이지로 이동하시겠습니까?`
+      );
+      if (navigateToDetail) {
+        window.location.href = `/restaurant/${selectedRestaurant.restaurantId}`;
+      }
     }
   };
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
   };
 
-  const addItem = () => {
-    if (inputValue.trim() !== "") {
-      const newItem = {
-        option: inputValue.trim(),
-        style: { backgroundColor: getRandomColor(), textColor: "white" },
-        percentage: 100 / (data.length + 1),
-      };
-      const newData = [...data, newItem].map((item) => ({
-        ...item,
-        percentage: 100 / (data.length + 1),
-      }));
-      setData(newData);
-      setInputValue("");
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/restaurant/search/list?search=${searchQuery}`
+      );
+      setSearchResults(response.data.data.restaurantSummaryDtoList || []);
+    } catch (error) {
+      console.error("Error searching for restaurants:", error);
+      alert("음식점 검색 중 오류가 발생했습니다.");
     }
+  };
+
+  const addItem = (restaurant) => {
+    const newItem = {
+      option: restaurant.restaurantName,
+      restaurantId: restaurant.restaurantId,
+      style: { backgroundColor: getRandomColor(), textColor: "white" },
+    };
+    setData([...data, newItem]);
+    setSearchQuery("");
+    setSearchResults([]);
   };
 
   const removeItem = (index) => {
-    const newData = data
-      .filter((_, i) => i !== index)
-      .map((item) => ({
-        ...item,
-        percentage: 100 / (data.length - 1),
-      }));
+    const newData = data.filter((_, i) => i !== index);
     setData(newData);
   };
 
@@ -156,17 +182,7 @@ function App() {
         <Wheel
           mustStartSpinning={mustSpin}
           prizeNumber={prizeNumber}
-          data={
-            data.length > 0
-              ? data
-              : [
-                  {
-                    option: "",
-                    style: { backgroundColor: "#fff" },
-                    percentage: 100,
-                  },
-                ]
-          }
+          data={data.length > 0 ? data : [{ option: "No data", style: { backgroundColor: "#fff" } }]}
           onStopSpinning={StopSpinning}
           backgroundColors={["#3e3e3e", "#df3428"]}
           textColors={["#ffffff"]}
@@ -174,7 +190,7 @@ function App() {
           outerBorderWidth={10}
           innerBorderColor={"#f2f2f2"}
           innerBorderWidth={10}
-          innerRadius={0} // 룰렛의 가운데를 채우기 위해 innerRadius를 0으로 설정
+          innerRadius={0}
           radiusLineColor={"#eeeeee"}
           radiusLineWidth={8}
           fontSize={17}
@@ -186,18 +202,22 @@ function App() {
         <Title>나의 즐겨찾기 음식점</Title>
         <Input
           type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          placeholder="음식점 추가"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="음식점 검색"
         />
-        <Button onClick={addItem}>추가</Button>
+        <Button onClick={handleSearch}>검색</Button>
         <List>
+          {searchResults.map((restaurant, index) => (
+            <ListItem key={index}>
+              {restaurant.restaurantName}
+              <ActionButton add onClick={() => addItem(restaurant)}>추가</ActionButton>
+            </ListItem>
+          ))}
           {data.map((item, index) => (
             <ListItem key={index}>
               {item.option}
-              <RemoveButton onClick={() => removeItem(index)}>
-                삭제
-              </RemoveButton>
+              <ActionButton onClick={() => removeItem(index)}>삭제</ActionButton>
             </ListItem>
           ))}
         </List>
@@ -206,4 +226,4 @@ function App() {
   );
 }
 
-export default App;
+export default Roulette;

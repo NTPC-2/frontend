@@ -10,6 +10,7 @@ const CardsGrid = styled.div`
   justify-content: center;
 `;
 
+//음식점 리스트 받아오기
 const RestaurantCard = () => {
   const { category_id } = useParams(); // URL에서 category_id를 받아옵니다.
   const [stores, setStores] = useState([]);
@@ -18,11 +19,7 @@ const RestaurantCard = () => {
     // 카테고리 ID에 따라 서버에서 음식점 데이터를 가져옴
     const fetchStores = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/restaurant/list?category=${category_id}`, {
-          headers: {
-            "Authorization": `Bearer ${yourTokenHere}`  // 필요한 경우 토큰을 추가
-          }
-        });
+        const response = await fetch(`http://localhost:8080/restaurant/list?category=${category_id}`);
 
         if (!response.ok) {
           console.error('Failed to fetch stores:', response.statusText);

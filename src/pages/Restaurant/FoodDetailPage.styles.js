@@ -29,47 +29,21 @@ export const ImageSection = styled.div`
 export const Image = styled.img`
   width: 600px;
   height: 400px;
-  object-fit: cover;
   border-radius: 8px;
   border: 2px solid #ddd;
-`;
-
-export const NavButton = styled.button`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.7);
-  border: none;
-  border-radius: 50%;
-  padding: 10px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 1);
-  }
-`;
-
-export const PrevButton = styled(NavButton)`
-  left: 10px;
-`;
-
-export const NextButton = styled(NavButton)`
-  right: 10px;
 `;
 
 export const StoreTitleSection = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   margin-bottom: 20px;
+  padding-bottom: 10px; /* 하단에 여유 공간을 주어 분리감 */
+  border-bottom: 1px solid #ddd; /* 아래쪽에 구분선 추가 */
 `;
 
 export const StoreTitle = styled.h2`
-  font-size: 24px;
+  font-size: 32px; /* 타이틀 폰트 크기 증가 */
   font-weight: bold;
   margin: 0;
   text-align: left;
@@ -78,10 +52,12 @@ export const StoreTitle = styled.h2`
 export const RatingSection = styled.div`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
 `;
 
-export const StatItem = styled.span`
-  margin: 0 10px;
+export const StatItem = styled.div`
+  margin-left: 20px;
   display: flex;
   align-items: center;
   font-size: 16px;
@@ -171,4 +147,33 @@ export const ReviewFooter = styled.div`
   font-size: 14px;
   color: #555555;
   cursor: pointer;
+`;
+
+export const SubmitReviewButton = styled.button`
+  align-self: flex-end;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+export const ReviewsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+
+
+export const BlurredSection = styled.div`
+  filter: blur(5px);
+  pointer-events: auto; /* 클릭 이벤트를 허용 */
+  user-select: none; /* 드래그 및 텍스트 선택 방지 */
 `;

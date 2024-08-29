@@ -205,7 +205,7 @@ const Categories = () => {
                 />
               ))
             ) : (
-              <p>해당하는 가게는 없습니다.</p>
+              <div>해당하는 가게는 없습니다.</div> // <div> 태그로 변경
             )}
           </CardsGrid>
         </CategoryContainer>
