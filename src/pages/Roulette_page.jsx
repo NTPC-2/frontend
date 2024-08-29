@@ -1,7 +1,8 @@
 import { Wheel } from "react-custom-roulette";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios from "axios"; // axios를 import
+import axios from "axios"; 
+import { getCookie } from "./utils/UseCookies"; // 쿠키에서 토큰을 가져오는 함수
 
 const Container = styled.div`
   display: flex;
@@ -95,7 +96,12 @@ function Roulette() {
 
   const fetchFavoriteRestaurants = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/roulette');
+      const token = getCookie('token'); // 쿠키에서 토큰 가져오기
+      const response = await axios.get('http://localhost:8080/roulette', {
+        headers: {
+          Authorization: `Bearer ${token}` // 토큰을 헤더에 포함
+        }
+      });
       const restaurantData = response.data.map((restaurant) => ({
         option: restaurant.restaurantName,
         restaurantId: restaurant.restaurantId,
