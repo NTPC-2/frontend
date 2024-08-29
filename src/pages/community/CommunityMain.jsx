@@ -2,9 +2,10 @@ import Write from "../../assets/Write.png";
 import PosterBox from "../../component/PosterBar";
 import { createGlobalStyle } from "styled-components";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import * as S from "./CommunityStyle";
 import WritePost from "./WritePost";
+import PostDetail from "./PostDetail";
 
 const GlobalStyle = createGlobalStyle`
   body, html {
@@ -14,44 +15,43 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-// Communitypage 컴포넌트 정의
 const Communitypage = () => {
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPosts, setTotlaPosts] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [selectedPost, setSelectedPost] = useState(null);
   const [isWriting, setIsWriting] = useState(false);
   const posts_page = 10;
-
+  const [selectedPost, setSelectedPost] = useState(null);
   const accessToken = localStorage.getItem("accessToken");
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("http://localhost:8080/post/list", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (response.data.success) {
-          setTotlaPosts(response.data.data.countPost);
-          setPosts(response.data.data.postSummaryDtoList);
-        } else {
-          console.error("게시물 가져오기 실패:", response.data.message);
-        }
-      } catch (error) {
-        console.error("게시물 가져오기 : 에러 발생 ", error);
-      } finally {
-        setLoading(false);
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("http://localhost:8080/post/list", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: { page: currentPage },
+      });
+      if (response.data.success) {
+        setTotlaPosts(response.data.data.countPost);
+        setPosts(response.data.data.postSummaryDtoList);
+      } else {
+        console.error("게시물 가져오기 실패:", response.data.message);
       }
-    };
+    } catch (error) {
+      console.error("게시물 가져오기 : 에러 발생 ", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [accessToken, currentPage]);
+
+  useEffect(() => {
     fetchPosts();
-  }, [currentPage]);
+  }, [fetchPosts]);
 
   const handleIconClick = () => {
-    console.log("Icon clicked"); // 아이콘 클릭 시 콘솔에 로그 출력
     setIsWriting((prev) => !prev);
   };
 
@@ -66,6 +66,36 @@ const Communitypage = () => {
     }
   };
 
+  const handlePostClick = async (postId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/post/details/${postId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        const postData = response.data.data;
+        setSelectedPost({
+          ...postData.postInfoDto, // 기존 postInfoDto 데이터
+          commentInfoDtoList: postData.commentInfoDtoList, // 추가된 댓글 목록
+        });
+        console.log("게시물 상세 가져오기 성공");
+        console.log(response.data.data);
+      } else {
+        console.error("게시물 상세 가져오기 실패:", response.data.message);
+      }
+    } catch (error) {
+      console.error("게시물 상세 가져오기 : 에러 발생", error);
+    }
+  };
+
+  const handleClosePostDetail = () => {
+    setSelectedPost(null);
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -78,6 +108,7 @@ const Communitypage = () => {
               새 글을 작성해주세요!
               <S.Icon src={Write} onClick={handleIconClick} />
             </S.WritePostBar>
+
             {isWriting && (
               <WritePost
                 onClose={() => setIsWriting(false)}
@@ -85,28 +116,40 @@ const Communitypage = () => {
               />
             )}
 
-            {loading ? (
-              <p>Loading...</p>
-            ) : posts.length === 0 ? ( // 게시물이 없는 경우 문구 출력
-              <p>게시물이 존재하지 않습니다.</p>
+            {selectedPost ? (
+              <PostDetail
+                selectedPost={selectedPost} // 모든 데이터를 포함한 selectedPost
+                onClose={handleClosePostDetail}
+              />
             ) : (
-              posts.map((post) => (
-                <PosterBox
-                  key={post.postId}
-                  title={post.topic}
-                  content={post.contentsSnippet}
-                  author={post.authorName}
-                  date={new Date().toLocaleDateString()}
-                  countLike={post.countLike}
-                  countComment={post.countComment}
-                  countScrap={post.countScrap}
-                />
-              ))
-            )}
-            {currentPage * posts_page < totalPosts && (
-              <S.NextPageButton onClick={handleNextPage}>
-                다음 페이지
-              </S.NextPageButton>
+              <>
+                {loading ? (
+                  <p>Loading...</p>
+                ) : posts.length === 0 ? (
+                  <p>게시물이 존재하지 않습니다.</p>
+                ) : (
+                  posts.map((post) => (
+                    <PosterBox
+                      key={post.postId}
+                      title={post.topic}
+                      content={post.contentsSnippet}
+                      author={post.authorName}
+                      date={new Date().toLocaleDateString()}
+                      countLike={post.countLike}
+                      countComment={post.countComment}
+                      countScrap={post.countScrap}
+                      onClick={() => handlePostClick(post.postId)}
+                    />
+                  ))
+                )}
+                {currentPage * posts_page < totalPosts && (
+                  <S.ButtonBox>
+                    <S.NextPageButton onClick={handleNextPage}>
+                      다음 페이지
+                    </S.NextPageButton>
+                  </S.ButtonBox>
+                )}
+              </>
             )}
           </S.LeftContentBox>
           <S.RightContentBox>

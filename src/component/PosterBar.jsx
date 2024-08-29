@@ -6,6 +6,7 @@ const PosterBoxContainer = styled.div`
   flex-direction: column;
   padding: 10px;
   margin-bottom: 10px;
+  cursor: pointer;
 `;
 
 const Title = styled.h2`
@@ -37,9 +38,10 @@ const PosterBox = ({
   countLike,
   countComment,
   countScrap,
+  onClick,
 }) => {
   return (
-    <PosterBoxContainer>
+    <PosterBoxContainer onClick={onClick}>
       <Title>{title}</Title>
       <Content>{content}</Content>
       <Info>
@@ -62,4 +64,5 @@ PosterBox.propTypes = {
   countLike: PropTypes.number.isRequired,
   countComment: PropTypes.number.isRequired,
   countScrap: PropTypes.number.isRequired,
+  onClick: PropTypes.func.isRequired,
 };

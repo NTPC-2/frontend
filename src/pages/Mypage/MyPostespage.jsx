@@ -1,7 +1,8 @@
-import CardComponent2 from "../../component/CardComponent2";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CardComponent2 from "../../component/CardComponent2";
 
 const FoodContainer = styled.div`
   height: 500px;
@@ -15,9 +16,9 @@ const FoodContainer = styled.div`
   padding: 20px;
 `;
 
-// eslint-disable-next-line react/prop-types
 const MyPostespage = ({ count }) => {
   const [posts, setPosts] = useState([]);
+  const navigate = useNavigate(); // Hook to navigate programmatically
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -35,7 +36,7 @@ const MyPostespage = ({ count }) => {
         if (response.data.success) {
           setPosts(response.data.data);
         } else {
-          console.error("api 호출 실패");
+          console.error("API 호출 실패");
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -44,6 +45,10 @@ const MyPostespage = ({ count }) => {
 
     fetchPosts();
   }, []);
+
+  const handlePostClick = (postId) => {
+    navigate(`/post/${postId}`); // Navigate to the detailed view
+  };
 
   return (
     <FoodContainer>
@@ -57,6 +62,7 @@ const MyPostespage = ({ count }) => {
           countComment={post.countComment}
           timeLine={post.timeLine}
           userNickname={post.userNickname}
+          onPostClick={() => handlePostClick(post.postId)} // Pass handler
         />
       ))}
     </FoodContainer>

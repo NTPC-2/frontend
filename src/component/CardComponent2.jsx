@@ -1,13 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import {
-  AiOutlineHeart,
-  AiFillHeart,
-  AiOutlineStar,
-  AiFillStar,
-  AiOutlineMessage,
-} from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart, AiOutlineMessage } from "react-icons/ai";
 
 const Card = styled.div`
   display: flex;
@@ -28,12 +22,13 @@ const CardContent = styled.div`
   width: 100%;
 `;
 
-const StoreTitle = styled(Link)`
+const StoreTitle = styled.div`
   font-size: 18px;
   font-weight: bold;
   margin: 0;
   text-decoration: none;
   color: black;
+  cursor: pointer;
 `;
 
 const StoreDescription = styled.p`
@@ -69,39 +64,31 @@ const StoreStat = styled.span`
   cursor: pointer;
 `;
 
-const CardComponent = () => {
-  const [likes, setLikes] = useState(0);
-  const [favorites, setFavorites] = useState(0);
+const CardComponent2 = ({
+  postId,
+  topic,
+  contents,
+  countLike,
+  countComment,
+  timeLine,
+  userNickname,
+  onPostClick, // Add this prop
+}) => {
+  const [likes, setLikes] = useState(countLike);
   const [liked, setLiked] = useState(false);
-  const [favorited, setFavorited] = useState(false);
-
-  const storeId = "store1"; // 각 가게의 고유 ID를 설정합니다
 
   const handleLike = () => {
-    if (liked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
-    }
+    setLikes(liked ? likes - 1 : likes + 1);
     setLiked(!liked);
-  };
-
-  const handleFavorite = () => {
-    if (favorited) {
-      setFavorites(favorites - 1);
-    } else {
-      setFavorites(favorites + 1);
-    }
-    setFavorited(!favorited);
   };
 
   return (
     <Card>
       <CardContent>
-        <StoreTitle to={`/store/${storeId}`}>제목</StoreTitle>
-        <StoreDescription>글의 내용</StoreDescription>
-        <StoreAuthor>홍길동</StoreAuthor>
-        <StoreDate>2024-08-21</StoreDate>
+        <StoreTitle onClick={() => onPostClick(postId)}>{topic}</StoreTitle>
+        <StoreDescription>{contents}</StoreDescription>
+        <StoreAuthor>{userNickname}</StoreAuthor>
+        <StoreDate>{timeLine}</StoreDate>
       </CardContent>
       <CardStats>
         <StoreStat onClick={handleLike}>
@@ -112,20 +99,13 @@ const CardComponent = () => {
           )}
           {likes}
         </StoreStat>
-        <StoreStat onClick={handleFavorite}>
-          {favorited ? (
-            <AiFillStar style={{ color: "gold" }} />
-          ) : (
-            <AiOutlineStar style={{ color: "grey" }} />
-          )}
-          {favorites}
-        </StoreStat>
-        <StoreStat as={Link} to="/comments">
+        <StoreStat>
           <AiOutlineMessage style={{ color: "grey" }} />
+          {countComment}
         </StoreStat>
       </CardStats>
     </Card>
   );
 };
 
-export default CardComponent;
+export default CardComponent2;

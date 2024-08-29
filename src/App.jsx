@@ -12,6 +12,7 @@ import FoodDetailPage from "./pages/Food_details_page";
 import Mypage from "./pages/Mypage/MypageMain";
 import EditProfile from "./pages/Mypage/EditProfile";
 import CommunityMain from "./pages/community/CommunityMain";
+import PostDetail from "./pages/community/PostDetail";
 function App() {
   return (
     <RecoilRoot>
@@ -33,6 +34,7 @@ function App() {
             path="/Login/forgot-password"
             element={<ForgotPasswordPage />}
           />
+          <Route path="/post/:postId" element={<PostDetail />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>

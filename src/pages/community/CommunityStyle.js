@@ -109,13 +109,42 @@ export const Icon = styled.img`
 export const NextPageButton = styled.button`
   margin-top: 20px;
   padding: 10px 20px;
+  width: 200px;
   font-size: 16px;
+
   cursor: pointer;
-  background-color: #4caf50;
+  background-color: #99ccff;
   color: white;
   border: none;
   border-radius: 5px;
   &:hover {
-    background-color: #45a049;
+    background-color: #66b2ff;
+  }
+`;
+
+export const ButtonBox = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+
+export const PostDetailContainer = styled.div`
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin: 5px 0;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px 0;
   }
 `;
