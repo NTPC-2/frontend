@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { LoggedState } from "../recoil/states/Login";
@@ -6,6 +7,7 @@ import myPageIcon from "../assets/Avatar.png";
 import login from "../assets/Login.png";
 import logout from "../assets/logout.png";
 import signup from "../assets/signup.png";
+
 const Container = styled.div`
   width: 100%;
   height: 6%;
@@ -13,7 +15,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
   position: fixed;
   z-index: 1;
 `;
@@ -88,12 +89,20 @@ const LoginIcon = styled.img`
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoggedState);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const handleLogout = () => {
     setIsLoggedIn({ isLoggedIn: false, user: null });
     navigate("/");
   };
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      navigate(`/categories/search?query=${searchQuery}`);
+    }
+  };
+
   return (
     <Container>
       <ContentContainer>
@@ -103,7 +112,12 @@ const Navbar = () => {
         <StyleLink to="/Community">게시판</StyleLink>
       </ContentContainer>
       <SearchBarContainer>
-        <SearchInput placeholder="Seearch ..."></SearchInput>
+        <SearchInput
+          placeholder="Search ..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleSearch}
+        />
       </SearchBarContainer>
       <ContentContainer>
         {isLoggedIn ? (

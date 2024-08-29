@@ -1,13 +1,7 @@
-import { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import {
-  AiOutlineHeart,
-  AiFillHeart,
-  AiOutlineStar,
-  AiFillStar,
-  AiOutlineMessage,
-} from "react-icons/ai";
+import { AiFillStar, AiOutlineStar, AiFillEdit, AiFillDelete } from "react-icons/ai";
+import Stars from "./Stars";
 
 // 카드 스타일
 const Card = styled.div`
@@ -19,6 +13,7 @@ const Card = styled.div`
   border-radius: 8px;
   width: 300px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
 `;
 
 // 이미지 스타일
@@ -74,87 +69,65 @@ const ReviewDate = styled.p`
   margin: 0;
 `;
 
-// 카드 통계 스타일
-const CardStats = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-  width: 100%;
-`;
-
-// 리뷰 통계 스타일
-const ReviewStat = styled.span`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #555555;
-  margin-right: 10px;
+// 버튼 스타일 (아이콘 버튼)
+const IconButton = styled.button`
+  background: none;
+  border: none;
+  color: #888888;
   cursor: pointer;
+  font-size: 20px;
+  padding: 0;
+  margin-left: 10px;
+
+  &:hover {
+    color: #000000;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: #cccccc;
+  }
 `;
 
-// 별 개수를 나타내는 컴포넌트
-const Stars = ({ count }) => {
-  const stars = Array(5)
-    .fill(false)
-    .map((_, index) => index < count);
-  return (
-    <div style={{ display: "flex", gap: "4px" }}>
-      {" "}
-      {/* Flexbox를 사용하여 별을 가로로 배치 */}
-      {stars.map((filled, index) =>
-        filled ? (
-          <AiFillStar key={index} style={{ color: "gold" }} />
-        ) : (
-          <AiOutlineStar key={index} style={{ color: "grey" }} />
-        )
-      )}
-    </div>
-  );
-};
+// 버튼 컨테이너 스타일 (카드의 우측 하단에 배치)
+const ButtonContainer = styled.div`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  display: flex;
+`;
 
-// 리뷰 카드 컴포넌트
-const ReviewCard = ({ review }) => {
-  const [likes, setLikes] = useState(0);
-  const [favorites, setFavorites] = useState(0);
-  const [liked, setLiked] = useState(false);
-  const [favorited, setFavorited] = useState(false);
+const ReviewCard = ({ review, onEdit, onDelete, canEdit }) => {
+  // 임의의 테스트 이미지 URL을 사용
+  const testImageUrl = "https://elucidatorbucket.s3.ap-northeast-2.amazonaws.com/d25fd5bc-2sun.jpg";
 
-  const handleLike = () => {
-    if (liked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
-    }
-    setLiked(!liked);
-  };
-
-  const handleFavorite = () => {
-    if (favorited) {
-      setFavorites(favorites - 1);
-    } else {
-      setFavorites(favorites + 1);
-    }
-    setFavorited(!favorited);
-  };
+  // 실제 리뷰 이미지가 없을 경우 테스트 이미지 사용
+  const imageUrl = review.reviewImgList && review.reviewImgList.length > 0 ? review.reviewImgList[0] : testImageUrl;
 
   return (
     <Card>
       <CardImage>
-        {review.imgList.length > 0 ? (
-          <CardImageContent
-            src={review.imgList[0]} // 첫 번째 이미지를 표시합니다
-            alt="Review Thumbnail"
-          />
-        ) : (
-          <p>No Image</p> // 이미지가 없을 경우 기본 메시지
-        )}
+        <CardImageContent
+          src={imageUrl}
+          alt="Review Thumbnail"
+        />
       </CardImage>
       <CardContent>
         <ReviewTitle>{review.restaurantName}</ReviewTitle>
-        <Stars count={review.star} /> {/* 별 개수를 표시 */}
+        <Stars rating={review.star} /> {/* 별 개수를 표시 */}
         <ReviewBody>{review.contents}</ReviewBody>
-        <ReviewAuthor>{review.userNickname}</ReviewAuthor>
+        <ReviewAuthor>작성자: {review.userNickname}</ReviewAuthor>
         <ReviewDate>{review.timeLine}</ReviewDate>
+        {canEdit && (
+          <ButtonContainer>
+            <IconButton onClick={() => onEdit(review)} disabled={!canEdit}>
+              <AiFillEdit />
+            </IconButton>
+            <IconButton onClick={() => onDelete(review.reviewId)} disabled={!canEdit}>
+              <AiFillDelete />
+            </IconButton>
+          </ButtonContainer>
+        )}
       </CardContent>
     </Card>
   );

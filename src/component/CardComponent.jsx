@@ -1,12 +1,11 @@
-import { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import {
   AiOutlineHeart,
-  AiFillHeart,
   AiOutlineStar,
-  AiFillStar,
   AiOutlineMessage,
+  AiFillStar,
 } from "react-icons/ai";
 
 const Card = styled.div`
@@ -16,11 +15,12 @@ const Card = styled.div`
   padding: 10px;
   border-radius: 8px;
   width: 300px;
+  height: 100px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const CardImage = styled.div`
-  width: 80px;
+  width: 120px;
   height: 80px;
   background-color: #e0e7ff;
   border-radius: 4px;
@@ -34,6 +34,7 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 100%;
 `;
 
 const StoreTitle = styled(Link)`
@@ -44,22 +45,29 @@ const StoreTitle = styled(Link)`
   color: black;
 `;
 
-const StoreLocation = styled.p`
+const StoreMenu = styled.p`
   font-size: 14px;
   color: #555555;
   margin: 4px 0;
 `;
 
-const StoreMenu = styled.p`
-  font-size: 12px;
-  color: #888888;
-  margin: 0;
+const CardFooter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+`;
+
+const AverageStar = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #555555;
 `;
 
 const CardStats = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 10px;
 `;
 
 const StoreStat = styled.span`
@@ -71,66 +79,63 @@ const StoreStat = styled.span`
   cursor: pointer;
 `;
 
-const CardComponent = () => {
-  const [likes, setLikes] = useState(0);
-  const [favorites, setFavorites] = useState(0);
-  const [liked, setLiked] = useState(false);
-  const [favorited, setFavorited] = useState(false);
+const CardComponent = ({ store = {} }) => {
+  if (!store || !store.restaurantName) {
+    return null;
+  }
 
-  const storeId = "store1"; // 여기서 각 가게의 고유 ID를 설정합니다
+  const {
+    restaurantName,
+    menuNames,
+    mainImg,
+    countHeart,
+    countBookmark,
+    countReview,
+    averageStar,
+    restaurantId,
+  } = store;
 
-  const handleLike = () => {
-    if (liked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
-    }
-    setLiked(!liked);
-  };
-
-  const handleFavorite = () => {
-    if (favorited) {
-      setFavorites(favorites - 1);
-    } else {
-      setFavorites(favorites + 1);
-    }
-    setFavorited(!favorited);
-  };
+  const firstMenu = menuNames.split(",")[0] || "메뉴 정보가 없습니다.";
 
   return (
     <Card>
       <CardImage>
         <img
-          src="image-placeholder.png"
-          alt="Thumbnail"
-          style={{ width: "100%", height: "100%" }}
+          src={mainImg || "/path/to/default-image.png"}
+          alt={restaurantName}
+          style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "4px" }}
         />
       </CardImage>
       <CardContent>
-        <StoreTitle to={`/store/${storeId}`}>가게이름</StoreTitle>
-        <StoreLocation>가게위치</StoreLocation>
-        <StoreMenu>메뉴</StoreMenu>
-        <CardStats>
-          <StoreStat onClick={handleLike}>
-            {liked ? (
-              <AiFillHeart style={{ color: "red" }} />
-            ) : (
+        <StoreTitle 
+          to={{
+            pathname: `/restaurant/${restaurantId}`,
+            state: { store } // store 정보를 전달
+          }}
+        >
+          {restaurantName}
+        </StoreTitle>
+        <StoreMenu>{firstMenu}</StoreMenu>
+        <CardFooter>
+          <AverageStar>
+            <AiFillStar style={{ color: "#FFD700", marginRight: "5px" }} />
+            {averageStar ? averageStar.toFixed(1) : "0.0"}
+          </AverageStar>
+          <CardStats>
+            <StoreStat>
               <AiOutlineHeart style={{ color: "grey" }} />
-            )}
-            {likes}
-          </StoreStat>
-          <StoreStat onClick={handleFavorite}>
-            {favorited ? (
-              <AiFillStar style={{ color: "gold" }} />
-            ) : (
+              {countHeart}
+            </StoreStat>
+            <StoreStat>
               <AiOutlineStar style={{ color: "grey" }} />
-            )}
-            {favorites}
-          </StoreStat>
-          <StoreStat as={Link} to="/comments">
-            <AiOutlineMessage style={{ color: "grey" }} />
-          </StoreStat>
-        </CardStats>
+              {countBookmark}
+            </StoreStat>
+            <StoreStat>
+              <AiOutlineMessage style={{ color: "grey" }} />
+              {countReview}
+            </StoreStat>
+          </CardStats>
+        </CardFooter>
       </CardContent>
     </Card>
   );

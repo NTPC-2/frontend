@@ -7,8 +7,8 @@ import Signup from "./pages/Signup";
 import Roulettepage from "./pages/Roulette_page";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import Communitypage from "./pages/Communitypage";
-import Categories from "./pages/Categories_page";
-import FoodDetailPage from "./pages/Food_details_page";
+import Categories from "./pages/Restaurant/Categories_page";
+import FoodDetailPage from "./pages/Restaurant/Food_details_page";
 import Mypage from "./pages/Mypage/MypageMain";
 
 function App() {
@@ -20,11 +20,10 @@ function App() {
             <Route path="/" element={<Mainpage />} />
             <Route path="/Login" element={<LoginPage />} />
             <Route path="/Signup" element={<Signup />} />
-
             <Route path="/Roulette" element={<Roulettepage />} />
             <Route path="/Community" element={<Communitypage />} />
             <Route path="/categories/:category" element={<Categories />} />
-            <Route path="/store/:storeId" element={<FoodDetailPage />} />
+            <Route path="/restaurant/:storeId" element={<FoodDetailPage />} />
             <Route path="/mypage" element={<Mypage />} />
           </Route>
           <Route
