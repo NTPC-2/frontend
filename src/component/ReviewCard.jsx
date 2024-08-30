@@ -1,16 +1,11 @@
-import React from "react";
+import { useState } from "react";
 import styled from "styled-components";
-<<<<<<< HEAD
 import {
-  AiOutlineHeart,
-  AiFillHeart,
-  AiOutlineStar,
   AiFillStar,
+  AiOutlineStar,
+  AiFillEdit,
+  AiFillDelete,
 } from "react-icons/ai";
-=======
-import { AiFillStar, AiOutlineStar, AiFillEdit, AiFillDelete } from "react-icons/ai";
-import Stars from "./Stars";
->>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
 
 // 카드 스타일
 const Card = styled.div`
@@ -78,7 +73,6 @@ const ReviewDate = styled.p`
   margin: 0;
 `;
 
-<<<<<<< HEAD
 // 별 개수를 나타내는 컴포넌트
 const Stars = ({ count }) => {
   const stars = Array(5)
@@ -97,32 +91,6 @@ const Stars = ({ count }) => {
   );
 };
 
-// 리뷰 카드 컴포넌트
-const ReviewCard = ({
-  restaurantName,
-  star,
-  contents,
-  userNickname,
-  timeLine,
-  imgList,
-}) => {
-  const [likes, setLikes] = useState(0);
-  const [favorites, setFavorites] = useState(0);
-  const [liked, setLiked] = useState(false);
-  const [favorited, setFavorited] = useState(false);
-
-  const handleLike = () => {
-    setLikes((prevLikes) => (liked ? prevLikes - 1 : prevLikes + 1));
-    setLiked((prevLiked) => !prevLiked);
-  };
-
-  const handleFavorite = () => {
-    setFavorites((prevFavorites) =>
-      favorited ? prevFavorites - 1 : prevFavorites + 1
-    );
-    setFavorited((prevFavorited) => !prevFavorited);
-  };
-=======
 // 버튼 스타일 (아이콘 버튼)
 const IconButton = styled.button`
   background: none;
@@ -152,41 +120,41 @@ const ButtonContainer = styled.div`
 `;
 
 const ReviewCard = ({ review, onEdit, onDelete, canEdit }) => {
+  const [likes, setLikes] = useState(0);
+  const [favorites, setFavorites] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [favorited, setFavorited] = useState(false);
+
+  const handleLike = () => {
+    setLikes((prevLikes) => (liked ? prevLikes - 1 : prevLikes + 1));
+    setLiked((prevLiked) => !prevLiked);
+  };
+
+  const handleFavorite = () => {
+    setFavorites((prevFavorites) =>
+      favorited ? prevFavorites - 1 : prevFavorites + 1
+    );
+    setFavorited((prevFavorited) => !prevFavorited);
+  };
+
   // 임의의 테스트 이미지 URL을 사용
-  const testImageUrl = "https://elucidatorbucket.s3.ap-northeast-2.amazonaws.com/d25fd5bc-2sun.jpg";
+  const testImageUrl =
+    "https://elucidatorbucket.s3.ap-northeast-2.amazonaws.com/d25fd5bc-2sun.jpg";
 
   // 실제 리뷰 이미지가 없을 경우 테스트 이미지 사용
-  const imageUrl = review.reviewImgList && review.reviewImgList.length > 0 ? review.reviewImgList[0] : testImageUrl;
->>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
+  const imageUrl =
+    review.reviewImgList && review.reviewImgList.length > 0
+      ? review.reviewImgList[0]
+      : testImageUrl;
 
   return (
     <Card>
       <CardImage>
-<<<<<<< HEAD
-        {imgList.length > 0 ? (
-          <CardImageContent
-            src={imgList[0]} // 첫 번째 이미지를 표시합니다
-            alt="Review Thumbnail"
-          />
-        ) : (
-          <p>No Image</p> // 이미지가 없을 경우 기본 메시지
-        )}
-      </CardImage>
-      <CardContent>
-        <ReviewTitle>{restaurantName}</ReviewTitle>
-        <Stars count={star} /> {/* 별 개수를 표시 */}
-        <ReviewBody>{contents}</ReviewBody>
-        <ReviewAuthor>{userNickname}</ReviewAuthor>
-        <ReviewDate>{timeLine}</ReviewDate>
-=======
-        <CardImageContent
-          src={imageUrl}
-          alt="Review Thumbnail"
-        />
+        <CardImageContent src={imageUrl} alt="Review Thumbnail" />
       </CardImage>
       <CardContent>
         <ReviewTitle>{review.restaurantName}</ReviewTitle>
-        <Stars rating={review.star} /> {/* 별 개수를 표시 */}
+        <Stars count={review.star} /> {/* 별 개수를 표시 */}
         <ReviewBody>{review.contents}</ReviewBody>
         <ReviewAuthor>작성자: {review.userNickname}</ReviewAuthor>
         <ReviewDate>{review.timeLine}</ReviewDate>
@@ -195,12 +163,14 @@ const ReviewCard = ({ review, onEdit, onDelete, canEdit }) => {
             <IconButton onClick={() => onEdit(review)} disabled={!canEdit}>
               <AiFillEdit />
             </IconButton>
-            <IconButton onClick={() => onDelete(review.reviewId)} disabled={!canEdit}>
+            <IconButton
+              onClick={() => onDelete(review.reviewId)}
+              disabled={!canEdit}
+            >
               <AiFillDelete />
             </IconButton>
           </ButtonContainer>
         )}
->>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
       </CardContent>
     </Card>
   );

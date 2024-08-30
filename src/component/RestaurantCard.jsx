@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
-import CardComponent from './CardComponent';
+import { useState, useEffect } from "react";
+import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import CardComponent from "./CardComponent";
 
 const CardsGrid = styled.div`
   display: flex;
@@ -19,24 +19,27 @@ const RestaurantCard = () => {
     // 카테고리 ID에 따라 서버에서 음식점 데이터를 가져옴
     const fetchStores = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/restaurant/list?category=${category_id}`);
+        const response = await fetch(
+          `http://localhost:8080/restaurant/list?category=${category_id}`
+        );
 
         if (!response.ok) {
-          console.error('Failed to fetch stores:', response.statusText);
+          console.error("Failed to fetch stores:", response.statusText);
           return;
         }
 
         const data = await response.json();
         setStores(data.data.restaurantSummaryDtoList || []); // 서버에서 받아온 음식점 리스트
       } catch (error) {
-        console.error('Error fetching stores:', error);
+        console.error("Error fetching stores:", error);
       }
     };
 
-    if (category_id >= 0 && category_id <= 7) {  // 카테고리 ID가 0에서 7 사이인지 확인
+    if (category_id >= 0 && category_id <= 7) {
+      // 카테고리 ID가 0에서 7 사이인지 확인
       fetchStores();
     } else {
-      console.error('Invalid category_id');
+      console.error("Invalid category_id");
     }
   }, [category_id]);
 

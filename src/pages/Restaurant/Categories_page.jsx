@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
-import styled, { createGlobalStyle } from 'styled-components';
-import axios from 'axios';
-import CardComponent from '../../component/CardComponent';
+import React, { useState, useEffect } from "react";
+import { useParams, Link, useLocation } from "react-router-dom";
+import styled, { createGlobalStyle } from "styled-components";
+import axios from "axios";
+import CardComponent from "../../component/CardComponent";
 
 const GlobalStyle = createGlobalStyle`
   body, html {
@@ -109,29 +109,29 @@ const Categories = () => {
   const [restaurants, setRestaurants] = useState([]);
 
   // URL의 쿼리 파라미터에서 검색어 추출
-  const query = new URLSearchParams(location.search).get('query');
+  const query = new URLSearchParams(location.search).get("query");
 
   // 카테고리 ID와 이름 매핑
   const getCategoryTitle = (category) => {
     switch (category) {
-      case 'all':
-        return { id: 0, name: '전체' };
-      case 'hansik':
-        return { id: 1, name: '한식' };
-      case 'western':
-        return { id: 2, name: '양식' };
-      case 'grill':
-        return { id: 3, name: '고기/구이' };
-      case 'japanese':
-        return { id: 4, name: '일식' };
-      case 'Chinese':
-        return { id: 5, name: '중식' };
-      case 'cafe':
-        return { id: 6, name: '카페' };
-      case 'bar':
-        return { id: 7, name: '술집' };
+      case "all":
+        return { id: 0, name: "전체" };
+      case "hansik":
+        return { id: 1, name: "한식" };
+      case "western":
+        return { id: 2, name: "양식" };
+      case "grill":
+        return { id: 3, name: "고기/구이" };
+      case "japanese":
+        return { id: 4, name: "일식" };
+      case "Chinese":
+        return { id: 5, name: "중식" };
+      case "cafe":
+        return { id: 6, name: "카페" };
+      case "bar":
+        return { id: 7, name: "술집" };
       default:
-        return { id: 0, name: '전체' };
+        return { id: 0, name: "전체" };
     }
   };
 
@@ -143,23 +143,29 @@ const Categories = () => {
         let response;
         if (query) {
           // 검색어가 있는 경우 검색 결과 가져오기
-          response = await axios.get(`http://localhost:8080/restaurant/search/list?search=${query}`);
+          response = await axios.get(
+            `http://localhost:8080/restaurant/search/list?search=${query}`
+          );
         } else {
           // 카테고리별 데이터 가져오기
-          response = await axios.get(`http://localhost:8080/restaurant/list?category=${categoryId}`);
+          response = await axios.get(
+            `http://localhost:8080/restaurant/list?category=${categoryId}`
+          );
         }
 
         // API 응답에서 데이터 가져오기
         setRestaurants(response.data.data.restaurantSummaryDtoList);
       } catch (error) {
-        console.error('Failed to fetch restaurants:', error);
+        console.error("Failed to fetch restaurants:", error);
       }
     };
 
     fetchRestaurants();
   }, [categoryId, query]);
 
-  const displayTitle = query ? `검색 결과: "${query}"` : `인하대 ${categoryTitle} 맛집 결과`;
+  const displayTitle = query
+    ? `검색 결과: "${query}"`
+    : `인하대 ${categoryTitle} 맛집 결과`;
 
   return (
     <>

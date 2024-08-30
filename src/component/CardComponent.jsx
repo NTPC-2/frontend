@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import {
@@ -103,14 +102,19 @@ const CardComponent = ({ store = {} }) => {
         <img
           src={mainImg || "/path/to/default-image.png"}
           alt={restaurantName}
-          style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "4px" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            borderRadius: "4px",
+          }}
         />
       </CardImage>
       <CardContent>
-        <StoreTitle 
+        <StoreTitle
           to={{
             pathname: `/restaurant/${restaurantId}`,
-            state: { store } // store 정보를 전달
+            state: { store }, // store 정보를 전달
           }}
         >
           {restaurantName}

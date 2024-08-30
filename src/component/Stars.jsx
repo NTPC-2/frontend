@@ -48,9 +48,7 @@ const Stars = ({ rating = 0 }) => {
           )}
         </StarContainer>
       ))}
-      <span
-        style={{ marginLeft: "8px", fontSize: "16px", color: "#555" }}
-      >
+      <span style={{ marginLeft: "8px", fontSize: "16px", color: "#555" }}>
         {safeRating.toFixed(1)}
       </span>
     </StarsWrapper>

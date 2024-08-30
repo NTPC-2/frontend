@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+
 import { AiOutlineHeart, AiFillHeart, AiOutlineMessage } from "react-icons/ai";
 
 const Card = styled.div`
