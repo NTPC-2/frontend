@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Navber from "./navbar";
+import Navbar from "./navbar";
 import { Outlet } from "react-router-dom";
 
 const Container = styled.div`
@@ -10,7 +10,8 @@ const Container = styled.div`
 const Layout = () => {
   return (
     <Container>
-      <Navber />
+      <Navbar />
+
       <Outlet />
     </Container>
   );

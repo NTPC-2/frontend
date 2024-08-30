@@ -1,56 +1,68 @@
 import styled from "styled-components";
-
-const PosterContainer = styled.div`
-  width: 750px;
-  height: 167px;
-  flex-shrink: 0;
+import PropTypes from "prop-types";
+const PosterBoxContainer = styled.div`
   border: 2px #d9d9d9 solid;
   display: flex;
   flex-direction: column;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
 `;
 
-const Title = styled.div`
-  color: #000;
+const Title = styled.h2`
+  font-size: 24px;
+  margin: 0;
+`;
 
-  font-family: Inter;
-  font-size: 30px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  letter-spacing: 0.2px;
-`;
-const Content = styled.div`
-  color: #000;
-  font-family: Inter;
-  font-size: 22px;
-  font-style: normal;
-  font-weight: 100;
-  line-height: normal;
-  letter-spacing: 0.2px;
-`;
-const Box = styled.div`
-  display: flex;
-`;
-const Text = styled.div`
-  color: #000;
-  font-family: Inter;
+const Content = styled.p`
   font-size: 16px;
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  letter-spacing: 0.2px;
+  margin: 5px 0;
 `;
 
-const Poster = () => {
+const Info = styled.small`
+  font-size: 14px;
+  color: #555;
+`;
+
+const Stats = styled.div`
+  margin-top: 10px;
+  font-size: 14px;
+  color: #777;
+`;
+
+const PosterBox = ({
+  title,
+  content,
+  author,
+  date,
+  countLike,
+  countComment,
+  countScrap,
+  onClick,
+}) => {
   return (
-    <PosterContainer>
-      <Title>혼밥러인데</Title>
-      <Content>같이먹을사람?</Content>
-      <Box>
-        <Text>방금|홍길동</Text>
-      </Box>
-    </PosterContainer>
+    <PosterBoxContainer onClick={onClick}>
+      <Title>{title}</Title>
+      <Content>{content}</Content>
+      <Info>
+        {author} | {date}
+      </Info>
+      <Stats>
+        좋아요: {countLike} | 댓글: {countComment} | 스크랩: {countScrap}
+      </Stats>
+    </PosterBoxContainer>
   );
 };
 
-export default Poster;
+export default PosterBox;
+
+PosterBox.propTypes = {
+  title: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  countLike: PropTypes.number.isRequired,
+  countComment: PropTypes.number.isRequired,
+  countScrap: PropTypes.number.isRequired,
+  onClick: PropTypes.func.isRequired,
+};

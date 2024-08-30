@@ -4,8 +4,13 @@ import axios from "axios";
 import Stars from "../../component/Stars";
 import ReviewCard from "../../component/ReviewCard";
 import ReviewForm from "../../component/ReviewForm";
-import { AiFillHeart, AiOutlineHeart, AiFillStar, AiOutlineStar, AiOutlineMessage } from "react-icons/ai";
-import { getCookie } from "../../utils/UseCookies"; // 토큰 가져오기
+import {
+  AiFillHeart,
+  AiOutlineHeart,
+  AiFillStar,
+  AiOutlineStar,
+  AiOutlineMessage,
+} from "react-icons/ai";
 
 import {
   GlobalStyle,
@@ -30,7 +35,7 @@ import {
 const FoodDetailPage = () => {
   const { storeId } = useParams();
   const navigate = useNavigate();
-  const authToken = getCookie("authToken"); // 토큰 가져오기
+  const accessToken = localStorage.getItem("accessToken");
   const [storeData, setStoreData] = useState(null);
   const [mainImg, setMainImg] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,9 +47,14 @@ const FoodDetailPage = () => {
 
   const fetchStoreData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/restaurant/${storeId}`, {
-        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {}, // 헤더에 토큰 포함 (로그인 상태일 때만)
-      });
+      const response = await axios.get(
+        `http://localhost:8080/restaurant/${storeId}`,
+        {
+          headers: accessToken
+            ? { Authorization: `Bearer ${accessToken}` }
+            : {}, // 헤더에 토큰 포함 (로그인 상태일 때만)
+        }
+      );
       const data = response.data.data;
 
       setStoreData(data);
@@ -64,11 +74,14 @@ const FoodDetailPage = () => {
           searchResponse.data.data.restaurantSummaryDtoList[0];
         setMainImg(restaurantData.mainImg);
       }
-      
-      if (data.isLogin && authToken) {
-        const profileResponse = await axios.get(`http://localhost:8080/profiles`, {
-          headers: { Authorization: `Bearer ${authToken}` }, // 헤더에 토큰 포함
-        });
+
+      if (data.isLogin && accessToken) {
+        const profileResponse = await axios.get(
+          `http://localhost:8080/profiles`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
+          }
+        );
         setUserNickname(profileResponse.data.data.userNickname);
       }
     } catch (error) {
@@ -109,14 +122,21 @@ const FoodDetailPage = () => {
 
     try {
       if (isLiked) {
-        await axios.delete(`http://localhost:8080/restaurant/removeheart/${storeId}`, {
-          headers: { Authorization: `Bearer ${authToken}` }, // 헤더에 토큰 포함
-        });
+        await axios.delete(
+          `http://localhost:8080/restaurant/removeheart/${storeId}`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
+          }
+        );
         setIsLiked(false);
       } else {
-        await axios.post(`http://localhost:8080/restaurant/addheart/${storeId}`, {}, {
-          headers: { Authorization: `Bearer ${authToken}` }, // 헤더에 토큰 포함
-        });
+        await axios.post(
+          `http://localhost:8080/restaurant/addheart/${storeId}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
+          }
+        );
         setIsLiked(true);
       }
     } catch (error) {
@@ -133,14 +153,21 @@ const FoodDetailPage = () => {
 
     try {
       if (isBookmarked) {
-        await axios.delete(`http://localhost:8080/restaurant/removebookmark/${storeId}`, {
-          headers: { Authorization: `Bearer ${authToken}` }, // 헤더에 토큰 포함
-        });
+        await axios.delete(
+          `http://localhost:8080/restaurant/removebookmark/${storeId}`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
+          }
+        );
         setIsBookmarked(false);
       } else {
-        await axios.post(`http://localhost:8080/restaurant/addbookmark/${storeId}`, {}, {
-          headers: { Authorization: `Bearer ${authToken}` }, // 헤더에 토큰 포함
-        });
+        await axios.post(
+          `http://localhost:8080/restaurant/addbookmark/${storeId}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
+          }
+        );
         setIsBookmarked(true);
       }
     } catch (error) {
@@ -158,7 +185,10 @@ const FoodDetailPage = () => {
       reviewId: review.reviewId,
       star: review.star,
       contents: review.contents,
-      reviewImg: review.reviewImgList && review.reviewImgList.length > 0 ? review.reviewImgList[0] : null,
+      reviewImg:
+        review.reviewImgList && review.reviewImgList.length > 0
+          ? review.reviewImgList[0]
+          : null,
     });
   };
 
@@ -167,7 +197,7 @@ const FoodDetailPage = () => {
       await axios.post(
         `http://localhost:8080/restaurant/review/${editingReview.reviewId}`,
         updatedReviewData,
-        { headers: { Authorization: `Bearer ${authToken}` } } // 헤더에 토큰 포함
+        { headers: { Authorization: `Bearer ${accessToken}` } } // 헤더에 토큰 포함
       );
       alert("리뷰가 성공적으로 수정되었습니다.");
       setEditingReview(null); // 수정 완료 후 초기화
@@ -184,9 +214,12 @@ const FoodDetailPage = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:8080/restaurant/review/${reviewId}`, {
-        headers: { Authorization: `Bearer ${authToken}` }, // 헤더에 토큰 포함
-      });
+      await axios.delete(
+        `http://localhost:8080/restaurant/review/${reviewId}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
+        }
+      );
       alert("리뷰가 성공적으로 삭제되었습니다.");
       fetchStoreData(); // 삭제 후 데이터를 다시 불러옴
     } catch (error) {
@@ -214,11 +247,17 @@ const FoodDetailPage = () => {
     const cleaned = phone.toString().replace(/\D/g, "");
 
     if (cleaned.length === 10) {
-      return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+      return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(
+        6
+      )}`;
     } else if (cleaned.length === 11) {
-      return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+      return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(
+        7
+      )}`;
     } else if (cleaned.length === 12) {
-      return `${cleaned.slice(0, 4)}-${cleaned.slice(4, 8)}-${cleaned.slice(8)}`;
+      return `${cleaned.slice(0, 4)}-${cleaned.slice(4, 8)}-${cleaned.slice(
+        8
+      )}`;
     } else {
       return phone;
     }
@@ -226,12 +265,11 @@ const FoodDetailPage = () => {
 
   // 리뷰를 최신순으로 정렬 및 자신이 작성한 리뷰를 가장 먼저 위치
   const sortedReviews = reviewDetailsDtoList
-    ? [...reviewDetailsDtoList]
-        .sort((a, b) => {
-          if (a.userNickname === userNickname) return -1; // 자신의 닉네임과 비교
-          if (b.userNickname === userNickname) return 1;
-          return new Date(b.timeLine) - new Date(a.timeLine);
-        })
+    ? [...reviewDetailsDtoList].sort((a, b) => {
+        if (a.userNickname === userNickname) return -1; // 자신의 닉네임과 비교
+        if (b.userNickname === userNickname) return 1;
+        return new Date(b.timeLine) - new Date(a.timeLine);
+      })
     : [];
 
   return (
@@ -275,9 +313,7 @@ const FoodDetailPage = () => {
               {count_bookmark}
             </StatItem>
             <StatItem>
-              <AiOutlineMessage
-                style={{ color: "grey", marginRight: "5px" }}
-              />
+              <AiOutlineMessage style={{ color: "grey", marginRight: "5px" }} />
               {count_review}
             </StatItem>
           </RatingSection>
@@ -305,22 +341,24 @@ const FoodDetailPage = () => {
           <ReviewSection>
             {isLogin ? (
               <>
-                <ReviewForm 
-                  storeId={storeId} 
-                  onReviewSubmitted={fetchStoreData} 
-                  initialData={editingReview}  // 수정 시 기존 데이터를 전달
+                <ReviewForm
+                  storeId={storeId}
+                  onReviewSubmitted={fetchStoreData}
+                  initialData={editingReview} // 수정 시 기존 데이터를 전달
                   onSubmit={handleReviewSubmit} // 리뷰 등록 또는 수정을 처리
                   onCancel={() => setEditingReview(null)} // 수정 취소 시 처리
                 />
                 <ReviewsGrid>
                   {sortedReviews && sortedReviews.length > 0 ? (
                     sortedReviews.map((review, index) => (
-                      <ReviewCard 
-                        key={index} 
-                        review={review} 
-                        onEdit={() => handleReviewEdit(review)}  // 수정 버튼 클릭 시 처리
-                        onDelete={() => handleReviewDelete(review.reviewId)}  // 삭제 버튼 클릭 시 처리
-                        canEdit={isLogin && review.userNickname === userNickname} // 수정/삭제 가능 여부 확인
+                      <ReviewCard
+                        key={index}
+                        review={review}
+                        onEdit={() => handleReviewEdit(review)} // 수정 버튼 클릭 시 처리
+                        onDelete={() => handleReviewDelete(review.reviewId)} // 삭제 버튼 클릭 시 처리
+                        canEdit={
+                          isLogin && review.userNickname === userNickname
+                        } // 수정/삭제 가능 여부 확인
                       />
                     ))
                   ) : (
@@ -330,22 +368,24 @@ const FoodDetailPage = () => {
               </>
             ) : (
               <BlurredSection onClick={handleBlurredClick}>
-                <ReviewForm 
-                  storeId={storeId} 
-                  onReviewSubmitted={fetchStoreData} 
-                  initialData={editingReview}  // 수정 시 기존 데이터를 전달
+                <ReviewForm
+                  storeId={storeId}
+                  onReviewSubmitted={fetchStoreData}
+                  initialData={editingReview} // 수정 시 기존 데이터를 전달
                   onSubmit={handleReviewSubmit} // 리뷰 등록 또는 수정을 처리
                   onCancel={() => setEditingReview(null)} // 수정 취소 시 처리
                 />
                 <ReviewsGrid>
                   {sortedReviews && sortedReviews.length > 0 ? (
                     sortedReviews.map((review, index) => (
-                      <ReviewCard 
-                        key={index} 
-                        review={review} 
-                        onEdit={() => handleReviewEdit(review)}  // 수정 버튼 클릭 시 처리
-                        onDelete={() => handleReviewDelete(review.reviewId)}  // 삭제 버튼 클릭 시 처리
-                        canEdit={isLogin && review.userNickname === userNickname} // 수정/삭제 가능 여부 확인
+                      <ReviewCard
+                        key={index}
+                        review={review}
+                        onEdit={() => handleReviewEdit(review)} // 수정 버튼 클릭 시 처리
+                        onDelete={() => handleReviewDelete(review.reviewId)} // 삭제 버튼 클릭 시 처리
+                        canEdit={
+                          isLogin && review.userNickname === userNickname
+                        } // 수정/삭제 가능 여부 확인
                       />
                     ))
                   ) : (

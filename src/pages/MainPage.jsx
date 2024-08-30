@@ -56,7 +56,7 @@ const RouletteLink = styled(Link)`
   position: relative;
 
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -68,7 +68,7 @@ const RouletteLink = styled(Link)`
   }
 
   &:after {
-    content: '🎯 룰렛 돌리기';
+    content: "🎯 룰렛 돌리기";
     position: absolute;
     color: #000;
     font-size: 24px;

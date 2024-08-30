@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // react-router-dom 사용
 
 const Layout = styled.div`
   display: flex;
@@ -71,12 +73,51 @@ const ForgotPasswordPage = () => {
   const [nickname, setNickname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
+  const [retrievedEmail, setRetrievedEmail] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    if (activeTab === "password") {
-      window.alert("임시 비밀번호가 이메일로 전송되었습니다.");
-    } else if (activeTab === "id") {
-      window.alert("아이디 조회 요청이 접수되었습니다.");
+  const handleSubmit = async () => {
+    try {
+      if (activeTab === "password") {
+        // 비밀번호 찾기 API 호출
+        const response = await axios.post(
+          `http://localhost:8080/recovery/password`,
+          { email }
+        );
+        if (response.status === 200) {
+          window.alert("이메일로 임시 비밀번호가 발급되었습니다!");
+          navigate("/login"); // 로그인 페이지로 이동
+        }
+      } else if (activeTab === "id") {
+        // 아이디 찾기 API 호출
+        const response = await axios.post(
+          `http://localhost:8080/recovery/email`,
+          {
+            nickname,
+            phoneNumber,
+          }
+        );
+        if (response.status === 200) {
+          const emailData = response.data.email;
+          setRetrievedEmail(emailData);
+          navigate("/login"); // 로그인 페이지로 이동
+        }
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          window.alert("파라미터 형식이 잘못되었습니다. 다시 확인해주세요.");
+        } else if (error.response.status === 2005) {
+          window.alert("존재하지 않는 유저입니다.");
+        } else if (error.response.status === 3200) {
+          window.alert("존재하지 않는 이메일입니다.");
+        } else {
+          window.alert("요청 처리 중 문제가 발생했습니다. 다시 시도해주세요.");
+        }
+      } else {
+        console.error("API 요청 중 오류 발생:", error);
+        window.alert("요청 처리 중 문제가 발생했습니다. 다시 시도해주세요.");
+      }
     }
   };
 
@@ -119,6 +160,7 @@ const ForgotPasswordPage = () => {
         <SubmitButton onClick={handleSubmit}>
           {activeTab === "id" ? "Find ID" : "Find Password"}
         </SubmitButton>
+        {retrievedEmail && <p>가입하신 이메일은 {retrievedEmail} 입니다.</p>}
       </Container>
     </Layout>
   );

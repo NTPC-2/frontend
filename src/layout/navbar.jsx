@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+import { useEffect } from "react";
+=======
 import React, { useState } from "react";
+>>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { LoggedState } from "../recoil/states/Login";
@@ -7,6 +11,17 @@ import myPageIcon from "../assets/Avatar.png";
 import login from "../assets/Login.png";
 import logout from "../assets/logout.png";
 import signup from "../assets/signup.png";
+<<<<<<< HEAD
+import axios from "axios";
+import { setCookie, getCookie } from "../utils/UseCookies";
+
+// Axios 인스턴스 생성 및 기본 설정
+const axiosInstance = axios.create({
+  baseURL: "http://localhost:8080",
+  withCredentials: true,
+});
+=======
+>>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
 
 const Container = styled.div`
   width: 100%;
@@ -17,6 +32,7 @@ const Container = styled.div`
   justify-content: space-between;
   position: fixed;
   z-index: 1;
+  top: 0;
 `;
 
 const ContentContainer = styled.div`
@@ -92,17 +108,55 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    setIsLoggedIn({ isLoggedIn: false, user: null });
-    navigate("/");
+  useEffect(() => {
+    // 쿠키에서 refresh 토큰 가져오기
+    const refreshToken = getCookie("refresh");
+
+    if (refreshToken) {
+      // 토큰이 존재하면 로그인 상태로 설정
+      axiosInstance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${refreshToken}`;
+      setIsLoggedIn({ isLoggedIn: true });
+    }
+  }, [setIsLoggedIn]);
+
+  const handleLogout = async () => {
+    try {
+      // 서버의 로그아웃 엔드포인트로 POST 요청을 보내 쿠키를 삭제하도록 요청
+      await axiosInstance.post(`/logout`);
+
+      // 쿠키에서 accessToken과 refresh 삭제
+      setCookie("accessToken", "", {
+        path: "/",
+        expires: new Date(0), // 즉시 만료
+      });
+      setCookie("refresh", "", {
+        path: "/",
+        expires: new Date(0), // 즉시 만료
+      });
+
+      // Axios 인스턴스에서 Authorization 헤더 제거
+      delete axiosInstance.defaults.headers.common["Authorization"];
+
+      // 상태 업데이트 및 리디렉션
+      setIsLoggedIn({ isLoggedIn: false, user: null });
+      navigate("/");
+    } catch (error) {
+      console.error("로그아웃 중 오류가 발생했습니다:", error);
+      alert("로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
+<<<<<<< HEAD
+=======
   const handleSearch = (e) => {
     if (e.key === "Enter") {
       navigate(`/categories/search?query=${searchQuery}`);
     }
   };
 
+>>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
   return (
     <Container>
       <ContentContainer>
@@ -112,30 +166,34 @@ const Navbar = () => {
         <StyleLink to="/Community">게시판</StyleLink>
       </ContentContainer>
       <SearchBarContainer>
+<<<<<<< HEAD
+        <SearchInput placeholder="Search ..."></SearchInput>
+=======
         <SearchInput
           placeholder="Search ..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={handleSearch}
         />
+>>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
       </SearchBarContainer>
       <ContentContainer>
-        {isLoggedIn ? (
+        {isLoggedIn.isLoggedIn ? ( // 로그인 여부에 따라 조건 변경
+          <>
+            <MyPageLink to="/" onClick={handleLogout}>
+              <LoginIcon src={logout} alt="Logout" />
+            </MyPageLink>
+            <MyPageLink to={`/mypage`}>
+              <MyPageIcon src={myPageIcon} alt="My Page" />
+            </MyPageLink>
+          </>
+        ) : (
           <>
             <MyPageLink to="/Signup">
               <LoginIcon src={signup} alt="Signup" />
             </MyPageLink>
             <MyPageLink to="/Login">
               <LoginIcon src={login} alt="Login" />
-            </MyPageLink>
-          </>
-        ) : (
-          <>
-            <MyPageLink to="/" onClick={handleLogout}>
-              <LoginIcon src={logout} alt="Logout" />
-            </MyPageLink>
-            <MyPageLink to={`/mypage/${isLoggedIn.user.id}`}>
-              <MyPageIcon src={myPageIcon} alt="My Page" />
             </MyPageLink>
           </>
         )}

@@ -1,8 +1,7 @@
 import { Wheel } from "react-custom-roulette";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios from "axios"; 
-import { getCookie } from "./utils/UseCookies"; // 쿠키에서 토큰을 가져오는 함수
+import axios from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -89,6 +88,7 @@ function Roulette() {
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
     fetchFavoriteRestaurants();
@@ -96,11 +96,10 @@ function Roulette() {
 
   const fetchFavoriteRestaurants = async () => {
     try {
-      const token = getCookie('token'); // 쿠키에서 토큰 가져오기
-      const response = await axios.get('http://localhost:8080/roulette', {
+      const response = await axios.get("http://localhost:8080/roulette", {
         headers: {
-          Authorization: `Bearer ${token}` // 토큰을 헤더에 포함
-        }
+          Authorization: `Bearer ${accessToken}`, // 토큰을 헤더에 포함
+        },
       });
       const restaurantData = response.data.map((restaurant) => ({
         option: restaurant.restaurantName,
@@ -188,7 +187,11 @@ function Roulette() {
         <Wheel
           mustStartSpinning={mustSpin}
           prizeNumber={prizeNumber}
-          data={data.length > 0 ? data : [{ option: "No data", style: { backgroundColor: "#fff" } }]}
+          data={
+            data.length > 0
+              ? data
+              : [{ option: "No data", style: { backgroundColor: "#fff" } }]
+          }
           onStopSpinning={StopSpinning}
           backgroundColors={["#3e3e3e", "#df3428"]}
           textColors={["#ffffff"]}
@@ -217,13 +220,17 @@ function Roulette() {
           {searchResults.map((restaurant, index) => (
             <ListItem key={index}>
               {restaurant.restaurantName}
-              <ActionButton add onClick={() => addItem(restaurant)}>추가</ActionButton>
+              <ActionButton add onClick={() => addItem(restaurant)}>
+                추가
+              </ActionButton>
             </ListItem>
           ))}
           {data.map((item, index) => (
             <ListItem key={index}>
               {item.option}
-              <ActionButton onClick={() => removeItem(index)}>삭제</ActionButton>
+              <ActionButton onClick={() => removeItem(index)}>
+                삭제
+              </ActionButton>
             </ListItem>
           ))}
         </List>
