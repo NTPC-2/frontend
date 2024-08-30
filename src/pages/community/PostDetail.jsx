@@ -156,8 +156,8 @@ const PostDetail = ({ selectedPost, onClose }) => {
   const handleLikeClick = async () => {
     try {
       const url = isLiked
-        ? `http://43.201.247.254:8080/post/removepostlike/${selectedPost.postId}`
-        : `http://43.201.247.254:8080/addpostlike/${selectedPost.postId}`;
+        ? `http://15.164.59.210:8080/post/removepostlike/${selectedPost.postId}`
+        : `http://15.164.59.210:8080/addpostlike/${selectedPost.postId}`;
 
       const method = isLiked ? "PATCH" : "POST";
       const response = await axios({
@@ -181,8 +181,8 @@ const PostDetail = ({ selectedPost, onClose }) => {
   const handleScrapClick = async () => {
     try {
       const url = isScrapped
-        ? `http://43.201.247.254:8080/post/removepostscrap/${selectedPost.postId}` // 스크랩 취소
-        : `http://43.201.247.254:8080/post/addpostscrap/${selectedPost.postId}`; // 스크랩 추가
+        ? `http://15.164.59.210:8080/post/removepostscrap/${selectedPost.postId}` // 스크랩 취소
+        : `http://15.164.59.210:8080/post/addpostscrap/${selectedPost.postId}`; // 스크랩 추가
 
       const method = isScrapped ? "PATCH" : "POST";
 
@@ -216,7 +216,7 @@ const PostDetail = ({ selectedPost, onClose }) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `http://43.201.247.254:8080/comment/create/${selectedPost.postId}`,
+        `http://15.164.59.210:8080/comment/create/${selectedPost.postId}`,
         { contents: commentText },
         {
           headers: {
@@ -243,8 +243,8 @@ const PostDetail = ({ selectedPost, onClose }) => {
   const handleCommentLikeClick = async (commentId, isLiked) => {
     try {
       const url = isLiked
-        ? `http://43.201.247.254:8080/comment/removelike/${commentId}` // 좋아요 해제 API
-        : `http://43.201.247.254:8080/comment/addcommentlike/${commentId}`; // 좋아요 API
+        ? `http://15.164.59.210:8080/comment/removelike/${commentId}` // 좋아요 해제 API
+        : `http://15.164.59.210:8080/comment/addcommentlike/${commentId}`; // 좋아요 API
 
       const response = await axios.patch(
         url,

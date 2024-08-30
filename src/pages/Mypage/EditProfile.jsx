@@ -138,7 +138,7 @@ const ProfileEditPage = () => {
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(
-          "http://43.201.247.254:8080/profiles/update",
+          "http://15.164.59.210:8080/profiles/update",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -192,7 +192,7 @@ const ProfileEditPage = () => {
         formData.append("profileImg", file);
       }
 
-      await axios.put("http://43.201.247.254:8080/profiles/update", formData, {
+      await axios.put("http://15.164.59.210:8080/profiles/update", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -202,7 +202,7 @@ const ProfileEditPage = () => {
 
       // PUT 요청 성공 후 GET 요청을 통해 최신 정보 불러오기
       const updatedProfileResponse = await axios.get(
-        "http://43.201.247.254:8080/profiles/update",
+        "http://15.164.59.210:8080/profiles/update",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -243,7 +243,7 @@ const ProfileEditPage = () => {
   const confirmDeleteAccount = async () => {
     try {
       await axios.patch(
-        "http://43.201.247.254:8080/profiles/delete",
+        "http://15.164.59.210:8080/profiles/delete",
         { status: "INACTIVE" },
         {
           headers: {

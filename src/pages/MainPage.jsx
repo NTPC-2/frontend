@@ -141,7 +141,7 @@ const Mainpage = () => {
   const fetchPosts = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://43.201.247.254:8080/post/list", {
+      const response = await axios.get("http://15.164.59.210:8080/post/list", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -166,7 +166,7 @@ const Mainpage = () => {
   const fetchRestaurants = useCallback(async () => {
     try {
       const response = await axios.get(
-        "http://43.201.247.254:8080/restaurant/list",
+        "http://15.164.59.210:8080/restaurant/list",
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

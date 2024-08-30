@@ -24,7 +24,7 @@ const Bookmarkpage = () => {
         const accessToken = localStorage.getItem("accessToken");
 
         const response = await axios.get(
-          "http://43.201.247.254:8080/profiles/bookmark",
+          "http://15.164.59.210:8080/profiles/bookmark",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

@@ -81,7 +81,7 @@ const ForgotPasswordPage = () => {
       if (activeTab === "password") {
         // 비밀번호 찾기 API 호출
         const response = await axios.post(
-          `http://43.201.247.254:8080/recovery/password`,
+          `http://15.164.59.210:8080/recovery/password`,
           { email }
         );
         if (response.status === 200) {
@@ -91,7 +91,7 @@ const ForgotPasswordPage = () => {
       } else if (activeTab === "id") {
         // 아이디 찾기 API 호출
         const response = await axios.post(
-          `http://43.201.247.254:8080/recovery/email`,
+          `http://15.164.59.210:8080/recovery/email`,
           {
             nickname,
             phoneNumber,

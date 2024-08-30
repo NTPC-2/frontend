@@ -148,12 +148,12 @@ const Categories = () => {
         if (query) {
           // 검색어가 있는 경우 검색 결과 가져오기
           response = await axios.get(
-            `http://43.201.247.254:8080/restaurant/search/list?search=${query}`
+            `http://15.164.59.210:8080/restaurant/search/list?search=${query}`
           );
         } else {
           // 카테고리별 데이터 가져오기
           response = await axios.get(
-            `http://43.201.247.254:8080/restaurant/list?category=${categoryId}`
+            `http://15.164.59.210:8080/restaurant/list?category=${categoryId}`
           );
         }
 

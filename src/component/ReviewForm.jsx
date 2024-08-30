@@ -81,13 +81,21 @@ const RemoveImageButton = styled.button`
   }
 `;
 
-const ReviewForm = ({ storeId, initialData, onReviewSubmitted, onSubmit, onCancel }) => {
+const ReviewForm = ({
+  storeId,
+  initialData,
+  onReviewSubmitted,
+  onSubmit,
+  onCancel,
+}) => {
   const [reviewData, setReviewData] = useState({
     star: initialData ? initialData.star : 0,
     contents: initialData ? initialData.contents : "",
     reviewImg: null,
   });
-  const [imageName, setImageName] = useState(initialData && initialData.reviewImg ? initialData.reviewImg : "");
+  const [imageName, setImageName] = useState(
+    initialData && initialData.reviewImg ? initialData.reviewImg : ""
+  );
 
   useEffect(() => {
     if (initialData) {
@@ -104,7 +112,9 @@ const ReviewForm = ({ storeId, initialData, onReviewSubmitted, onSubmit, onCance
     const { name, value } = e.target;
 
     const formattedValue =
-      name === "star" ? Math.max(0, Math.min(5, parseFloat(value).toFixed(1))) : value;
+      name === "star"
+        ? Math.max(0, Math.min(5, parseFloat(value).toFixed(1)))
+        : value;
 
     setReviewData({
       ...reviewData,
@@ -155,12 +165,12 @@ const ReviewForm = ({ storeId, initialData, onReviewSubmitted, onSubmit, onCance
         onSubmit({
           star: reviewData.star,
           contents: reviewData.contents,
-          reviewImg: imageName,  // 이미지가 업데이트되지 않았을 경우 기존 이미지 사용
+          reviewImg: imageName, // 이미지가 업데이트되지 않았을 경우 기존 이미지 사용
         });
       } else {
         // 새 리뷰 작성일 때는 기존의 로직 사용
         await axios.post(
-          `http://localhost:8080/restaurant/${storeId}/review`,
+          `http://15.164.59.210:8080/restaurant/${storeId}/review`,
           formData
         );
         alert("리뷰가 성공적으로 등록되었습니다.");
@@ -227,7 +237,9 @@ const ReviewForm = ({ storeId, initialData, onReviewSubmitted, onSubmit, onCance
             </ImageNameContainer>
           )}
         </div>
-        <SubmitReviewButton type="submit">{initialData ? "리뷰 수정" : "리뷰 등록"}</SubmitReviewButton>
+        <SubmitReviewButton type="submit">
+          {initialData ? "리뷰 수정" : "리뷰 등록"}
+        </SubmitReviewButton>
         {initialData && (
           <button type="button" onClick={onCancel}>
             취소

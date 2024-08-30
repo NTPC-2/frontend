@@ -83,7 +83,7 @@ const WritePost = ({ onClose, onPostCreated }) => {
 
     try {
       const response = await axios.post(
-        `http://43.201.247.254:8080/post`,
+        `http://15.164.59.210:8080/post`,
         data,
         {
           headers: {

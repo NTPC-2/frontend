@@ -24,7 +24,7 @@ const MyPostespage = ({ count }) => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          "http://43.201.247.254:8080/profiles/post",
+          "http://15.164.59.210:8080/profiles/post",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

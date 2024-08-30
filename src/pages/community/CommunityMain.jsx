@@ -37,7 +37,7 @@ const Communitypage = () => {
   const fetchPosts = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8080/post/list", {
+      const response = await axios.get("http://15.164.59.210:8080/post/list", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -58,7 +58,7 @@ const Communitypage = () => {
 
   const fetchRightContentData = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:8080/", {
+      const response = await axios.get("http://15.164.59.210:8080/", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -97,7 +97,7 @@ const Communitypage = () => {
   const handlePostClick = async (postId) => {
     try {
       const response = await axios.get(
-        `http://43.201.247.254:8080/post/details/${postId}`,
+        `http://15.164.59.210:8080/post/details/${postId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

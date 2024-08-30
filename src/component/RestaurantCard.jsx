@@ -20,7 +20,7 @@ const RestaurantCard = () => {
     const fetchStores = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/restaurant/list?category=${category_id}`
+          `http://15.164.59.210:8080/restaurant/list?category=${category_id}`
         );
 
         if (!response.ok) {
