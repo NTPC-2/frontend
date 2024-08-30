@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import axios from "axios";
 import CardComponent from "../../component/CardComponent";
+
+import Background2 from "../../assets/인하대3.jpg";
 
 const GlobalStyle = createGlobalStyle`
   body, html {
@@ -49,9 +51,11 @@ const MenuItem = styled(Link)`
 
 const Spacer = styled.div`
   width: 100%;
-  height: 200px;
-  background-color: #333; /* 회색 박스 */
+  height: 270px;
+
   margin-top: 20px;
+  background-image: url(${Background2});
+  background-size: cover;
 `;
 
 const CategoryContainer = styled.div`

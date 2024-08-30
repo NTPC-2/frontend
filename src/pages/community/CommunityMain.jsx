@@ -1,11 +1,13 @@
 import Write from "../../assets/Write.png";
 import PosterBox from "../../component/PosterBar";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, styled } from "styled-components";
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
 import * as S from "./CommunityStyle";
 import WritePost from "./WritePost";
 import PostDetail from "./PostDetail";
+import { PopularPostCard } from "./PopularPost"; // Import the new components
+import { RestaurantCard } from "./RestaurantCard"; // Import the new components
 
 const GlobalStyle = createGlobalStyle`
   body, html {
@@ -13,6 +15,11 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     overflow-x: hidden; /* X축 스크롤 제거 */
   }
+`;
+const Heading = styled.div`
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
 `;
 
 const Communitypage = () => {
@@ -24,6 +31,8 @@ const Communitypage = () => {
   const posts_page = 10;
   const [selectedPost, setSelectedPost] = useState(null);
   const accessToken = localStorage.getItem("accessToken");
+  const [popularPosts, setPopularPosts] = useState([]);
+  const [rankingContent, setRankingContent] = useState([]);
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
@@ -47,9 +56,28 @@ const Communitypage = () => {
     }
   }, [accessToken, currentPage]);
 
+  const fetchRightContentData = useCallback(async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response.data.data);
+      const { popularPostDtoList, popularRestaurantInterfaceList } =
+        response.data.data;
+
+      setPopularPosts(popularPostDtoList.slice(0, 2)); // Display only 2 popular posts
+      setRankingContent(popularRestaurantInterfaceList.slice(0, 7)); // Display only 2 ranking restaurants
+    } catch (error) {
+      console.error("오른쪽 컨텐츠 데이터를 가져오는 중 오류 발생", error);
+    }
+  }, [accessToken]);
+
   useEffect(() => {
     fetchPosts();
-  }, [fetchPosts]);
+    fetchRightContentData();
+  }, [fetchPosts, fetchRightContentData]);
 
   const handleIconClick = () => {
     setIsWriting((prev) => !prev);
@@ -153,9 +181,21 @@ const Communitypage = () => {
             )}
           </S.LeftContentBox>
           <S.RightContentBox>
-            <S.PopularPostContent />
-            <S.RecentReviews />
-            <S.RanckingContent />
+            <Heading>실시간 인기 게시물</Heading>
+            <S.PopularPostContent>
+              {popularPosts.map((post) => (
+                <PopularPostCard key={post.postId} post={post} />
+              ))}
+            </S.PopularPostContent>
+            <Heading>HOT 음식점</Heading>
+            <S.RanckingContent>
+              {rankingContent.map((restaurant) => (
+                <RestaurantCard
+                  key={restaurant.restaurantId}
+                  restaurant={restaurant}
+                />
+              ))}
+            </S.RanckingContent>
           </S.RightContentBox>
         </S.ContentContainer>
       </S.Layout>

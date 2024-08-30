@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
-// 각종 스타일 정의
+// Adjusted styles for the containers and content
 export const Layout = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  width: 100%;
 `;
 
 export const TitleBar = styled.div`
@@ -28,20 +28,19 @@ export const ContentContainer = styled.div`
 export const LeftContentBox = styled.div`
   display: flex;
   width: 750px;
-  height: 100%;
   flex-direction: column;
   gap: 80px;
 `;
 
 export const RightContentBox = styled.div`
   width: 460px;
-  height: 980px;
   display: flex;
   flex-direction: column;
   background-color: #d9d9d9;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start; /* Changed to align from the top */
+  align-items: flex-start; /* Changed to align from the top */
   gap: 20px;
+  padding: 20px; /* Added padding for some spacing */
 `;
 
 export const WritePostBar = styled.div`
@@ -76,23 +75,16 @@ export const TitleBar2 = styled.div`
 
 export const PopularPostContent = styled.div`
   width: 399px;
-  height: 149px;
-  flex-shrink: 0;
+  min-height: 200px; /* Changed height to min-height */
   background-color: #fff;
-`;
-
-export const RecentReviews = styled.div`
-  width: 399px;
-  height: 149px;
-  flex-shrink: 0;
-  background-color: #fff;
+  padding: 10px; /* Added padding for some spacing */
 `;
 
 export const RanckingContent = styled.div`
   width: 399px;
-  height: 370px;
-  flex-shrink: 0;
+  min-height: 600px; /* Changed height to min-height */
   background-color: #fff;
+  padding: 10px; /* Added padding for some spacing */
 `;
 
 export const Icon = styled.img`
@@ -111,7 +103,6 @@ export const NextPageButton = styled.button`
   padding: 10px 20px;
   width: 200px;
   font-size: 16px;
-
   cursor: pointer;
   background-color: #99ccff;
   color: white;

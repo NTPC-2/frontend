@@ -159,15 +159,15 @@ const PostDetail = ({ selectedPost, onClose }) => {
         ? `http://localhost:8080/post/removepostlike/${selectedPost.postId}`
         : `http://localhost:8080/post/addpostlike/${selectedPost.postId}`;
 
-      const response = await axios.patch(
-        url,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const method = isLiked ? "PATCH" : "POST";
+      const response = await axios({
+        method: method,
+        url: url,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
       if (response.data.success) {
         setIsLiked(!isLiked);
         setLikeCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
@@ -181,27 +181,30 @@ const PostDetail = ({ selectedPost, onClose }) => {
   const handleScrapClick = async () => {
     try {
       const url = isScrapped
-        ? `http://localhost:8080/post/removepostscrap/${selectedPost.postId}`
-        : `http://localhost:8080/post/addpostscrap/${selectedPost.postId}`;
+        ? `http://localhost:8080/post/removepostscrap/${selectedPost.postId}` // 스크랩 취소
+        : `http://localhost:8080/post/addpostscrap/${selectedPost.postId}`; // 스크랩 추가
 
-      const response = await axios.patch(
-        url,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const method = isScrapped ? "PATCH" : "POST";
+
+      const response = await axios({
+        method: method,
+        url: url,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
       if (response.data.success) {
         setIsScrapped(!isScrapped);
         setScrapCount((prevCount) =>
           isScrapped ? prevCount - 1 : prevCount + 1
         );
         console.log("게시글 스크랩/취소 처리 성공!");
+      } else {
+        console.error("게시글 스크랩/취소 처리 실패:", response.data.message);
       }
     } catch (error) {
-      console.error("게시물 스크랩/취소 처리 에러:", error);
+      console.error("게시글 스크랩/취소 처리 에러:", error);
     }
   };
 
@@ -225,9 +228,12 @@ const PostDetail = ({ selectedPost, onClose }) => {
 
       if (response.data.success) {
         const newComment = response.data.data;
-        setComments([...comments, newComment]);
+        setComments((prevComments) => [...prevComments, newComment]);
         setCommentText("");
         setShowCommentForm(false);
+        console.log("댓글 작성 성공!");
+      } else {
+        console.error("댓글 작성 실패:", response.data.message);
       }
     } catch (error) {
       console.error("댓글 작성 에러:", error);
@@ -265,21 +271,35 @@ const PostDetail = ({ selectedPost, onClose }) => {
           )
         );
         console.log("댓글 좋아요/취소 성공");
+      } else {
+        console.error("댓글 좋아요/취소 처리 실패:", response.data.message);
       }
     } catch (error) {
       console.error("댓글 좋아요/취소 처리 에러:", error);
     }
   };
 
+  const handleImageLoadError = (e) => {
+    e.target.src = "경로/대체이미지.png"; // 대체 이미지 경로 설정
+  };
+
   return (
     <PostDetailContainer>
       {selectedPost.postImgUrl && (
-        <PostImage src={selectedPost.postImgUrl} alt="Post Image" />
+        <PostImage
+          src={selectedPost.postImgUrl}
+          alt="Post Image"
+          onError={handleImageLoadError}
+        />
       )}
       <ContentSection>
         <CloseButton onClick={onClose}>X</CloseButton>
         <AuthorSection>
-          <AuthorImage src={selectedPost.userImgUrl} alt="Author" />
+          <AuthorImage
+            src={selectedPost.userImgUrl}
+            alt="Author"
+            onError={handleImageLoadError}
+          />
           <div>
             <AuthorName>{selectedPost.authorName}</AuthorName>
             <Timeline>{selectedPost.timeLine}</Timeline>
@@ -317,7 +337,11 @@ const PostDetail = ({ selectedPost, onClose }) => {
         <CommentSection>
           {comments.map((comment) => (
             <CommentItem key={comment.commentId}>
-              <AuthorImage src={comment.userImgUrl} alt="User" />
+              <AuthorImage
+                src={comment.userImgUrl}
+                alt="User"
+                onError={handleImageLoadError}
+              />
               <CommentContent>
                 <CommentAuthor>{comment.nickname}</CommentAuthor>
                 <CommentText>{comment.contents}</CommentText>
@@ -326,7 +350,12 @@ const PostDetail = ({ selectedPost, onClose }) => {
                   <IconButton
                     src={HeartIcon}
                     alt="댓글 좋아요"
-                    onClick={() => handleCommentLikeClick(comment.commentId)}
+                    onClick={() =>
+                      handleCommentLikeClick(
+                        comment.commentId,
+                        comment.isMyLike
+                      )
+                    }
                   />
                   <span>{comment.countLike}</span>
                   <ReplyButton onClick={() => setShowCommentForm(true)}>
