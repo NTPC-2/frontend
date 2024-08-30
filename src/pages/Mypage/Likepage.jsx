@@ -22,7 +22,7 @@ const Likepage = () => {
     const fetchLikedRestaurants = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/profiles/heart",
+          "http://43.201.247.254:8080/profiles/heart",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

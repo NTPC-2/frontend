@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "http://43.201.247.254:8080",
   withCredentials: true, // 쿠키 전송을 위해 설정
 });
 

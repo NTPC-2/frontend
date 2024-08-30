@@ -146,11 +146,14 @@ const Mypage = () => {
         }
 
         // 프로필 정보 요청
-        const response = await axios.get("http://localhost:8080/profiles", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          "http://43.201.247.254:8080/profiles",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
         if (response.data.success) {
           const userData = response.data.data;

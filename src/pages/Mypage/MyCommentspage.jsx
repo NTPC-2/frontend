@@ -23,7 +23,7 @@ const MyCommentspage = ({ count }) => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/profiles/scrap",
+          "http://43.201.247.254:8080/profiles/scrap",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

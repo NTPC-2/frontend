@@ -50,7 +50,7 @@ const AccountDeleteModal = ({ onClose }) => {
   const handleConfirmDelete = async () => {
     try {
       const response = await axios.patch(
-        "http://localhost:8080/profiles/delete",
+        "http://43.201.247.254:8080/profiles/delete",
         { status: "INACTIVE" },
         {
           headers: {

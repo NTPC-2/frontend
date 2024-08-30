@@ -48,7 +48,7 @@ const ReviewPage = ({ count }) => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/profiles/review",
+          "http://43.201.247.254:8080/profiles/review",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

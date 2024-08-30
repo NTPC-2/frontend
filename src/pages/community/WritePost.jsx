@@ -82,12 +82,16 @@ const WritePost = ({ onClose, onPostCreated }) => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/post", data, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `http://43.201.247.254:8080/post`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (response.data.success) {
         alert("게시물이 작성되었습니다.");
         onClose(); // 글쓰기 컴포넌트를 닫음

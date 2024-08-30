@@ -14,7 +14,7 @@ import { setCookie, getCookie } from "../utils/UseCookies";
 
 // Axios 인스턴스 생성 및 기본 설정
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "http://43.201.247.254:8080",
   withCredentials: true,
 });
 

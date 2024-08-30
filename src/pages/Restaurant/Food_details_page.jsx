@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Stars from "../../component/Stars";
@@ -48,7 +48,7 @@ const FoodDetailPage = () => {
   const fetchStoreData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/restaurant/${storeId}`,
+        `http://43.201.247.254:8080/restaurant/${storeId}`,
         {
           headers: accessToken
             ? { Authorization: `Bearer ${accessToken}` }
@@ -64,7 +64,7 @@ const FoodDetailPage = () => {
 
       // 가게 이미지를 서버에서 받아오거나, 가게 정보에서 받아오는 로직 (기존 로직 유지)
       const searchResponse = await axios.get(
-        `http://localhost:8080/restaurant/search/list?search=${data.restaurantName}`
+        `http://43.201.247.254:8080/restaurant/search/list?search=${data.restaurantName}`
       );
       if (
         searchResponse.data &&
@@ -77,7 +77,7 @@ const FoodDetailPage = () => {
 
       if (data.isLogin && accessToken) {
         const profileResponse = await axios.get(
-          `http://localhost:8080/profiles`,
+          `http://43.201.247.254:8080/profiles`,
           {
             headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
           }
@@ -123,7 +123,7 @@ const FoodDetailPage = () => {
     try {
       if (isLiked) {
         await axios.delete(
-          `http://localhost:8080/restaurant/removeheart/${storeId}`,
+          `http://43.201.247.254:8080/restaurant/removeheart/${storeId}`,
           {
             headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
           }
@@ -131,7 +131,7 @@ const FoodDetailPage = () => {
         setIsLiked(false);
       } else {
         await axios.post(
-          `http://localhost:8080/restaurant/addheart/${storeId}`,
+          `http://43.201.247.254:8080/restaurant/addheart/${storeId}`,
           {},
           {
             headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
@@ -154,7 +154,7 @@ const FoodDetailPage = () => {
     try {
       if (isBookmarked) {
         await axios.delete(
-          `http://localhost:8080/restaurant/removebookmark/${storeId}`,
+          `http://43.201.247.254:8080/restaurant/removebookmark/${storeId}`,
           {
             headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
           }
@@ -162,7 +162,7 @@ const FoodDetailPage = () => {
         setIsBookmarked(false);
       } else {
         await axios.post(
-          `http://localhost:8080/restaurant/addbookmark/${storeId}`,
+          `http://43.201.247.254:8080/restaurant/addbookmark/${storeId}`,
           {},
           {
             headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
@@ -195,7 +195,7 @@ const FoodDetailPage = () => {
   const handleReviewSubmit = async (updatedReviewData) => {
     try {
       await axios.post(
-        `http://localhost:8080/restaurant/review/${editingReview.reviewId}`,
+        `http://43.201.247.254:8080/restaurant/review/${editingReview.reviewId}`,
         updatedReviewData,
         { headers: { Authorization: `Bearer ${accessToken}` } } // 헤더에 토큰 포함
       );
@@ -215,7 +215,7 @@ const FoodDetailPage = () => {
     }
     try {
       await axios.delete(
-        `http://localhost:8080/restaurant/review/${reviewId}`,
+        `http://43.201.247.254:8080/restaurant/review/${reviewId}`,
         {
           headers: { Authorization: `Bearer ${accessToken}` }, // 헤더에 토큰 포함
         }

@@ -97,7 +97,7 @@ const Communitypage = () => {
   const handlePostClick = async (postId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/post/details/${postId}`,
+        `http://43.201.247.254:8080/post/details/${postId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
