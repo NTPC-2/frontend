@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useEffect } from "react";
+=======
+import React, { useState } from "react";
+>>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { LoggedState } from "../recoil/states/Login";
@@ -7,6 +11,7 @@ import myPageIcon from "../assets/Avatar.png";
 import login from "../assets/Login.png";
 import logout from "../assets/logout.png";
 import signup from "../assets/signup.png";
+<<<<<<< HEAD
 import axios from "axios";
 import { setCookie, getCookie } from "../utils/UseCookies";
 
@@ -15,6 +20,8 @@ const axiosInstance = axios.create({
   baseURL: "http://localhost:8080",
   withCredentials: true,
 });
+=======
+>>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
 
 const Container = styled.div`
   width: 100%;
@@ -98,6 +105,7 @@ const LoginIcon = styled.img`
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoggedState);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -140,6 +148,15 @@ const Navbar = () => {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      navigate(`/categories/search?query=${searchQuery}`);
+    }
+  };
+
+>>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
   return (
     <Container>
       <ContentContainer>
@@ -149,7 +166,16 @@ const Navbar = () => {
         <StyleLink to="/Community">게시판</StyleLink>
       </ContentContainer>
       <SearchBarContainer>
+<<<<<<< HEAD
         <SearchInput placeholder="Search ..."></SearchInput>
+=======
+        <SearchInput
+          placeholder="Search ..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleSearch}
+        />
+>>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
       </SearchBarContainer>
       <ContentContainer>
         {isLoggedIn.isLoggedIn ? ( // 로그인 여부에 따라 조건 변경

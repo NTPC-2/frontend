@@ -6,9 +6,15 @@ import LoginPage from "./pages/Login/Loginpage";
 import Signup from "./pages/signup/Signup";
 import Roulettepage from "./pages/Roulette_page";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+<<<<<<< HEAD
 
 import Categories from "./pages/Categories_page";
 import FoodDetailPage from "./pages/Food_details_page";
+=======
+import Communitypage from "./pages/Communitypage";
+import Categories from "./pages/Restaurant/Categories_page";
+import FoodDetailPage from "./pages/Restaurant/Food_details_page";
+>>>>>>> 58583fc08be51d7afd326b8e99f9cc51ec679ee6
 import Mypage from "./pages/Mypage/MypageMain";
 import EditProfile from "./pages/Mypage/EditProfile";
 import CommunityMain from "./pages/community/CommunityMain";
@@ -22,11 +28,10 @@ function App() {
             <Route path="/" element={<Mainpage />} />
             <Route path="/Login" element={<LoginPage />} />
             <Route path="/Signup" element={<Signup />} />
-
             <Route path="/Roulette" element={<Roulettepage />} />
             <Route path="/Community" element={<CommunityMain />} />
             <Route path="/categories/:category" element={<Categories />} />
-            <Route path="/store/:storeId" element={<FoodDetailPage />} />
+            <Route path="/restaurant/:storeId" element={<FoodDetailPage />} />
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/mypage/edit" element={<EditProfile />} />
           </Route>
