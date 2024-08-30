@@ -59,7 +59,7 @@ const Signup = () => {
 
     try {
       const response = await axios.get(
-        `http://43.201.247.254:8080/test/nickname/${nickname}`
+        `http://15.164.59.210:8080/test/nickname/${nickname}`
       );
 
       if (response.status === 200) {
@@ -116,7 +116,7 @@ const Signup = () => {
 
     try {
       const response = await axios.get(
-        `http://43.201.247.254:8080/test/email/${email}`
+        `http://15.164.59.210:8080/test/email/${email}`
       );
 
       if (response.status === 200) {
@@ -249,7 +249,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        `http://43.201.247.254:8080/signup`,
+        `http://15.164.59.210:8080/signup`,
         formData,
         {
           headers: {
